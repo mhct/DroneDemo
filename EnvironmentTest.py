@@ -5,7 +5,7 @@ from Environment import Environment
 from Helper import Point
 
 
-class TestEnvironment(unittest.TestCase):
+class EnvironmentTest(unittest.TestCase):
     def setUp(self):
         self.env = Environment(4, 4, 100, 100)  # size_x size_y res_x res_y
 
