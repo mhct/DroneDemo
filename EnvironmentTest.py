@@ -70,6 +70,12 @@ class EnvironmentTest(unittest.TestCase):
 
         self.assertFalse(self.env.is_in_obstacle_region(Point(50, 150, 1)))
 
+    def test_clear_map(self):
+        obstacle1 = Obstacle("obstacles/test_obstacle1.txt")
+        self.env.add_obstacle(obstacle1)
+        self.env.clear_map()
+        self.assertFalse(self.env.is_in_obstacle_region(Point(150, 150, 999)))
+
 
 if __name__ == '__main__':
     unittest.main()

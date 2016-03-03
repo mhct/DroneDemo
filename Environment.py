@@ -34,9 +34,6 @@ class Environment:
         self.res_x = res_x
         self.res_y = res_y
 
-        # initialize a dictionary to store added obstacles
-        self.obstacles = {}
-
     def add_obstacle(self, obstacle):
         """
         Add an obstacle to the environment
@@ -89,3 +86,21 @@ class Environment:
                 self.elevation_map[x][y] = 0
             else:
                 self.elevation_map[x][y] = max(occupying_pieces.values())
+
+    def clear_map(self):
+        self._clear_elevation_map()
+        self._clear_id_map()
+        self._clear_obstacle_dict()
+
+    def _clear_elevation_map(self):
+        x = len(self.elevation_map)
+        y = len(self.elevation_map[0])
+        self.elevation_map = [[0 for i in range(y)] for i in range(x)]
+
+    def _clear_id_map(self):
+        x = len(self.id_map)
+        y = len(self.id_map)
+        self.id_map = [[{} for i in range(y)] for i in range(x)]
+
+    def _clear_obstacle_dict(self):
+        self.obstacle_dict = {}
