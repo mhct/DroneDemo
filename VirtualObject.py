@@ -3,18 +3,29 @@ from collections import namedtuple
 from Helper import Cell
 
 
-class Obstacle:
+class VirtualObject:
     def __init__(self, file_path):
+        # initially, the id is set to -1, which means the object is not initialized. If the object was initialized,
+        # the id must be >= 0
         self._id = -1
         self._cells = []
         self._read_file(file_path)
 
     def get_cells(self):
+        """
+        :return: a list of cells that the object occupies
+        :rtype: list
+        """
         return self._cells
 
     def _read_file(self, file_path):
+        """
+        Read the object from a text file
+        :param file_path: the path to the file
+        :type file_path: str
+        """
         if self._id != -1:
-            raise Exception("Obstacle is already initialized")
+            raise Exception("Object is already initialized")
 
         f = open(file_path, 'r')
 
