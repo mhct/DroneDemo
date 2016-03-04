@@ -1,5 +1,5 @@
 from VirtualObject import VirtualObject
-from Helper import Point
+from Helper import Point, Resolution
 
 
 class Environment:
@@ -31,8 +31,7 @@ class Environment:
         self._object_dict = {}
 
         # store cell resolution
-        self._res_x = res_x
-        self._res_y = res_y
+        self._res = Resolution(res_x, res_y)
 
     def add_virtual_object(self, virtual_object):
         """
@@ -108,8 +107,5 @@ class Environment:
     def get_elevation_map(self):
         return self._elevation_map
 
-    def get_resolution_x(self):
-        return self._res_x
-
-    def get_resolution_y(self):
-        return self._res_y
+    def get_resolution(self):
+        return self._res

@@ -4,10 +4,14 @@ from VirtualObject import VirtualObject
 
 class HttpClient:
     def __init__(self):
-        pass
+        self._env = Environment(50, 50, 100, 100)
 
     def get_map(self):
-        env = Environment(4, 4, 1, 1)
-        virtual_object = VirtualObject("../virtualobjects/test_gui.txt")
-        env.add_virtual_object(virtual_object)
-        return env.get_elevation_map()
+        return self._env.get_elevation_map()
+
+    def add_virtual_object(self, file_name):
+        virtual_object = VirtualObject("../virtualobjects/" + file_name)
+        self._env.add_virtual_object(virtual_object)
+
+    def get_resolution(self):
+        return self._env.get_resolution()

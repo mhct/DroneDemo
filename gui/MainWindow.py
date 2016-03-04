@@ -1,6 +1,9 @@
+import os
+
 import numpy as np
 from PyQt4 import QtGui
 import pyqtgraph.opengl as gl
+from PyQt4.QtCore import Qt
 
 from MapUpdater import MapUpdater
 from HttpClient import HttpClient
@@ -9,10 +12,17 @@ from HttpClient import HttpClient
 class MainWindow(QtGui.QWidget):
     def __init__(self):
         super(MainWindow, self).__init__()
+        # Initialize the http client
         self._http_client = HttpClient()
+
+        # the gui
         self._init_gui()
+
         # the list to keep references to active threads
-        self.threads = []
+        self._threads = []
+
+        # the mesh that represent the environment
+        self._mesh = None
 
     def _init_gui(self):
         """
@@ -25,47 +35,87 @@ class MainWindow(QtGui.QWidget):
         self._init_buttons(grid)
         self._init_list_widget(grid)
         self._init_3d_map(grid)
+        self._init_object_checkbox(grid)
 
         # set the layout
         self.setLayout(grid)
         # position x, position y, width, height
-        self.setGeometry(300, 0, 1024, 720)
+        self.setGeometry(100, 0, 1024, 720)
         self.show()
 
+    def _init_object_checkbox(self, grid):
+        scroll = QtGui.QScrollArea()
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
+        all_checkboxes = QtGui.QWidget(scroll)
+        layout = QtGui.QVBoxLayout(all_checkboxes)
+        file_count = len([f for f in os.walk("../virtualobjects").next()[2] if f[0:11] == "main_object"])
+
+        self._check_boxes = []
+        for i in range(1, file_count + 1):
+            checkbox = QtGui.QCheckBox("Object_" + str(i))
+            layout.addWidget(checkbox)
+            self._check_boxes.append(checkbox)
+
+        scroll.setWidget(all_checkboxes)
+        grid.addWidget(scroll, 4, 0, 2, 3)
+
     def _init_3d_map(self, grid):
-        self.map_3d = gl.GLViewWidget()
-        self.map_3d.setCameraPosition(distance=100)
+        self._map_3d = gl.GLViewWidget()
+        res = self._http_client.get_resolution()
+        self._map_3d.setCameraPosition(distance=80 * (res.x + res.y) / 2)
         g = gl.GLGridItem()
-        g.scale(1, 1, 1)
+        g.scale(res.x, res.y, (res.x + res.y) / 2)
         g.setSize(50, 50, 50)
-        self.map_3d.addItem(g)
-        grid.addWidget(self.map_3d, 2, 0, 10, 10)
+        self._map_3d.addItem(g)
+        grid.addWidget(self._map_3d, 1, 3, 10, 10)
 
     def _init_list_widget(self, grid):
         self.list_widget = QtGui.QListWidget()
         grid.addWidget(self.list_widget, 13, 0, 3, 10)
 
     def _init_buttons(self, grid):
-        self.button = QtGui.QPushButton("Connect")
-        self.button.clicked.connect(self._start_map_updater)
-        grid.addWidget(self.button, 1, 0)
+        connect_button = QtGui.QPushButton("Connect")
+        # TODO change name, it is confusing
+        connect_button.clicked.connect(self._start_map_updater)
+        grid.addWidget(connect_button, 1, 0)
+
+        update_button = QtGui.QPushButton("Update")
+        update_button.clicked.connect(self._update_map)
+        grid.addWidget(update_button, 3, 0)
+
+        # TODO design preview
+        preview_button = QtGui.QPushButton("Preview")
+        grid.addWidget(preview_button, 3, 1)
 
     def _init_grid_layout(self):
         grid = QtGui.QGridLayout()
         grid.setSpacing(10)
         return grid
 
+    def _update_map(self):
+        for checkbox in self._check_boxes:
+            if checkbox.isChecked():
+                file_name = "main_object" + checkbox.text()[-1] + ".txt"
+                self._http_client.add_virtual_object(file_name)
+
     def _start_map_updater(self):
         # TODO prevent this one from being called twice
         map_updater = MapUpdater(self._http_client)
         map_updater.map_signal.connect(self._draw_3d_map)
-        self.threads.append(map_updater)
+        self._threads.append(map_updater)
         map_updater.start()
 
     def _write_to_screen(self, message):
         self.list_widget.addItem(unicode(message))
 
     def _draw_3d_map(self, mesh):
-        # TODO remove old items
-        self.map_3d.addItem(mesh)
+        if self._mesh is not None:
+            self._map_3d.removeItem(self._mesh)
+
+        self._mesh = mesh
+        if self._mesh is not None:
+            self._map_3d.addItem(self._mesh)
+
         self._write_to_screen("updated map")

@@ -21,11 +21,11 @@ class MapUpdater(QtCore.QThread):
         """
         Update map for each one second
         """
-        # while True:
-        elevation_map = self._http_client.get_map()
-        mesh = self._generate_mesh(elevation_map)
-        self.map_signal.emit(mesh)
-            # self.sleep(1)
+        while True:
+            elevation_map = self._http_client.get_map()
+            mesh = self._generate_mesh(elevation_map)
+            self.map_signal.emit(mesh)
+            self.sleep(1)
 
     def _generate_mesh(self, elevation_map):
         """
@@ -33,16 +33,19 @@ class MapUpdater(QtCore.QThread):
         :param elevation_map: the given elevation map
         :type elevation_map: 2D list
         """
+        res = self._http_client.get_resolution()
         all_cubes = []
         for x in range(len(elevation_map)):
             for y in range(len(elevation_map[0])):
                 if elevation_map[x][y] > 0:
-                    cube = self._construct_cube(x, y, 1, 1, elevation_map[x][y])
+                    cube = self._construct_cube(x * res.x, y * res.y, res.x, res.y, elevation_map[x][y])
                     all_cubes += cube
+
+        if len(all_cubes) == 0:
+            return None
 
         mesh = gl.GLMeshItem(vertexes=np.array(all_cubes), color=(0, 0, 1, 1), smooth=False, shader='shaded',
                              glOptions='opaque')
-        # mesh.setGLOptions('additive')
 
         return mesh
 
