@@ -1,18 +1,13 @@
-from PyQt4 import QtCore
-
 from Environment import Environment
+from VirtualObject import VirtualObject
 
 
-class HttpClient(QtCore.QThread):
-
-    map_signal = QtCore.pyqtSignal(object)
-
+class HttpClient:
     def __init__(self):
-        QtCore.QThread.__init__(self)
-        self._env = Environment(4, 4, 1, 1)
-        print "test"
+        pass
 
-    def run(self):
-        for i in range(10):
-            self.map_signal.emit(self._env.get_elevation_map())
-            self.sleep(2)
+    def get_map(self):
+        env = Environment(4, 4, 1, 1)
+        virtual_object = VirtualObject("../virtualobjects/test_gui.txt")
+        env.add_virtual_object(virtual_object)
+        return env.get_elevation_map()
