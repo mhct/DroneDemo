@@ -107,3 +107,9 @@ class Environment:
 
     def get_elevation_map(self):
         return self._elevation_map
+
+    def get_resolution_x(self):
+        return self._res_x
+
+    def get_resolution_y(self):
+        return self._res_y
