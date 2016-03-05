@@ -2,6 +2,7 @@ import numpy as np
 from PyQt4 import QtCore
 from HttpClient import HttpClient
 import pyqtgraph.opengl as gl
+from Helper import Point, Mesh
 
 
 class MapGetter(QtCore.QThread):
@@ -23,18 +24,24 @@ class MapGetter(QtCore.QThread):
         """
         while True:
             elevation_map = self._http_client.get_map()
-            mesh = self._generate_mesh(elevation_map)
+            drone_position = self._http_client.get_drone_position()
+            mesh = self._generate_mesh(elevation_map, drone_position)
             self.map_signal.emit(mesh)
             self.sleep(1)
 
-    def _generate_mesh(self, elevation_map):
+    def _generate_mesh(self, elevation_map, drone_position):
         """
         Draw the elevation map
         :param elevation_map: the given elevation map
         :type elevation_map: 2D list
+        :param drone_position: the current position of the drone
+        :type __namedtuple
         """
         res = self._http_client.get_resolution()
+
+        # TODO rename
         all_cubes = []
+        # draw virtual objects
         for x in range(len(elevation_map)):
             for y in range(len(elevation_map[0])):
                 if elevation_map[x][y] > 0:
@@ -42,12 +49,30 @@ class MapGetter(QtCore.QThread):
                     all_cubes += cube
 
         if len(all_cubes) == 0:
-            return None
+            object_mesh = None
+        else:
+            object_mesh = gl.GLMeshItem(vertexes=np.array(all_cubes), color=(0, 0, 1, 1), smooth=False, shader='shaded',
+                                        glOptions='opaque')
+            object_mesh.translate(-len(elevation_map) * res.x / 2, -len(elevation_map[0]) * res.y / 2, 0, True)
 
-        mesh = gl.GLMeshItem(vertexes=np.array(all_cubes), color=(0, 0, 1, 1), smooth=False, shader='shaded',
-                             glOptions='opaque')
+        # draw the drone
+        drone_shape = self._construct_drone_shape(drone_position, res.x, res.y)
+        drone_mesh = gl.GLMeshItem(vertexes=np.array(drone_shape), color=(1, 0, 0, 1), smooth=False, glOptions='opaque')
+        drone_mesh.translate(-len(elevation_map) * res.x / 2, -len(elevation_map[0]) * res.y / 2, 0, True)
 
-        return mesh
+        return Mesh(object_mesh, drone_mesh)
+
+    def _construct_drone_shape(self, drone_position, res_x, res_y):
+        # TODO add direction
+
+        p0 = [drone_position.x + res_x / 2, drone_position.y + res_y / 2, drone_position.z]
+        p1 = [drone_position.x - res_x / 2, drone_position.y + res_y / 2, drone_position.z]
+        p2 = [drone_position.x - res_x / 2, drone_position.y - res_y / 2, drone_position.z]
+        p3 = [drone_position.x + res_x / 2, drone_position.y - res_y / 2, drone_position.z]
+
+        drone_shape = [[p0, p1, p2], [p0, p3, p2]]
+
+        return drone_shape
 
     def _construct_cube(self, pos_x, pos_y, res_x, res_y, height):
         """

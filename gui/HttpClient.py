@@ -1,4 +1,5 @@
 from Environment import Environment
+from Helper import Point
 
 
 class HttpClient:
@@ -19,3 +20,6 @@ class HttpClient:
 
     def remove_virtual_object(self, virtual_object):
         self._env.remove_virtual_object(virtual_object)
+
+    def get_drone_position(self):
+        return Point(0, 0, 0)

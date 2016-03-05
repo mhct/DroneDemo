@@ -66,6 +66,7 @@ class MainWindow(QtGui.QWidget):
         self._map_3d.setCameraPosition(distance=80 * (res.x + res.y) / 2)
         g = gl.GLGridItem()
         g.scale(res.x, res.y, (res.x + res.y) / 2)
+
         # TODO use variable here
         g.setSize(50, 50, 50)
         self._map_3d.addItem(g)
@@ -118,10 +119,17 @@ class MainWindow(QtGui.QWidget):
 
     def _draw_3d_map(self, mesh):
         if self._mesh is not None:
-            self._map_3d.removeItem(self._mesh)
+            if self._mesh.virtual_objects is not None:
+                self._map_3d.removeItem(self._mesh.virtual_objects)
+
+            if self._mesh.drone is not None:
+                self._map_3d.removeItem(self._mesh.drone)
 
         self._mesh = mesh
-        if self._mesh is not None:
-            self._map_3d.addItem(self._mesh)
+        if self._mesh.virtual_objects is not None:
+            self._map_3d.addItem(self._mesh.virtual_objects)
+
+        if self._mesh.drone is not None:
+            self._map_3d.addItem(self._mesh.drone)
 
         self._write_to_screen("updated map")
