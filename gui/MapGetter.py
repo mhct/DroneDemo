@@ -53,12 +53,10 @@ class MapGetter(QtCore.QThread):
         else:
             object_mesh = gl.GLMeshItem(vertexes=np.array(all_cubes), color=(0, 0, 1, 1), smooth=False, shader='shaded',
                                         glOptions='opaque')
-            object_mesh.translate(-len(elevation_map) * res.x / 2, -len(elevation_map[0]) * res.y / 2, 0, True)
 
         # draw the drone
         drone_shape = self._construct_drone_shape(drone_position, res.x, res.y)
         drone_mesh = gl.GLMeshItem(vertexes=np.array(drone_shape), color=(1, 0, 0, 1), smooth=False, glOptions='opaque')
-        drone_mesh.translate(-len(elevation_map) * res.x / 2, -len(elevation_map[0]) * res.y / 2, 0, True)
 
         return Mesh(object_mesh, drone_mesh)
 

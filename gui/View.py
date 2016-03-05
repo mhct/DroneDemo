@@ -117,9 +117,13 @@ class View(QtGui.QWidget):
 
         self._mesh = mesh
         if self._mesh.virtual_objects is not None:
+            self._mesh.virtual_objects.translate(-self._map_width.x * self._resolution.x / 2,
+                                                 -self._map_width.y * self._resolution.y / 2, 0, True)
             self._map_3d.addItem(self._mesh.virtual_objects)
 
         if self._mesh.drone is not None:
+            self._mesh.drone.translate(-self._map_width.x * self._resolution.x / 2,
+                                       -self._map_width.y * self._resolution.y / 2, 0, True)
             self._map_3d.addItem(self._mesh.drone)
 
         self._write_to_screen("updated map")
