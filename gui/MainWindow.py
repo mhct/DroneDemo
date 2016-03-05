@@ -1,12 +1,12 @@
 import os
 
-import numpy as np
-from PyQt4 import QtGui
 import pyqtgraph.opengl as gl
+from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
 
-from MapUpdater import MapUpdater
 from HttpClient import HttpClient
+from MapGetter import MapGetter
+from MapSetter import MapSetter
 
 
 class MainWindow(QtGui.QWidget):
@@ -14,15 +14,14 @@ class MainWindow(QtGui.QWidget):
         super(MainWindow, self).__init__()
         # Initialize the http client
         self._http_client = HttpClient()
-
         # the gui
         self._init_gui()
-
         # the list to keep references to active threads
         self._threads = []
-
         # the mesh that represent the environment
         self._mesh = None
+        # the map setter TODO need to be refactored
+        self._map_setter = MapSetter(self._http_client)
 
     def _init_gui(self):
         """
@@ -67,23 +66,24 @@ class MainWindow(QtGui.QWidget):
         self._map_3d.setCameraPosition(distance=80 * (res.x + res.y) / 2)
         g = gl.GLGridItem()
         g.scale(res.x, res.y, (res.x + res.y) / 2)
+        # TODO use variable here
         g.setSize(50, 50, 50)
         self._map_3d.addItem(g)
         grid.addWidget(self._map_3d, 1, 3, 10, 10)
 
     def _init_list_widget(self, grid):
         self.list_widget = QtGui.QListWidget()
-        grid.addWidget(self.list_widget, 13, 0, 3, 10)
+        grid.addWidget(self.list_widget, 13, 3, 3, 10)
 
+    # noinspection PyUnresolvedReferences
     def _init_buttons(self, grid):
         connect_button = QtGui.QPushButton("Connect")
-        # TODO change name, it is confusing
-        connect_button.clicked.connect(self._start_map_updater)
+        connect_button.clicked.connect(self._start_map_getter)
         grid.addWidget(connect_button, 1, 0)
 
-        update_button = QtGui.QPushButton("Update")
-        update_button.clicked.connect(self._update_map)
-        grid.addWidget(update_button, 3, 0)
+        set_button = QtGui.QPushButton("Set")
+        set_button.clicked.connect(self._set_map)
+        grid.addWidget(set_button, 3, 0)
 
         # TODO design preview
         preview_button = QtGui.QPushButton("Preview")
@@ -94,18 +94,24 @@ class MainWindow(QtGui.QWidget):
         grid.setSpacing(10)
         return grid
 
-    def _update_map(self):
+    def _set_map(self):
+        object_ids = []
+
         for checkbox in self._check_boxes:
             if checkbox.isChecked():
-                file_name = "main_object" + checkbox.text()[-1] + ".txt"
-                self._http_client.add_virtual_object(file_name)
+                object_ids.append(int(checkbox.text()[-1]))
 
-    def _start_map_updater(self):
+        self._map_setter.set_map(object_ids)
+
+    def _start_map_getter(self):
+        """
+        Initialize a thread that gets the map from the drones and visualize it for each second
+        """
         # TODO prevent this one from being called twice
-        map_updater = MapUpdater(self._http_client)
-        map_updater.map_signal.connect(self._draw_3d_map)
-        self._threads.append(map_updater)
-        map_updater.start()
+        map_getter = MapGetter(self._http_client)
+        map_getter.map_signal.connect(self._draw_3d_map)
+        self._threads.append(map_getter)
+        map_getter.start()
 
     def _write_to_screen(self, message):
         self.list_widget.addItem(unicode(message))

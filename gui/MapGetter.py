@@ -4,7 +4,7 @@ from HttpClient import HttpClient
 import pyqtgraph.opengl as gl
 
 
-class MapUpdater(QtCore.QThread):
+class MapGetter(QtCore.QThread):
     map_signal = QtCore.pyqtSignal(object)
 
     def __init__(self, http_client):

@@ -1,5 +1,4 @@
 from Environment import Environment
-from VirtualObject import VirtualObject
 
 
 class HttpClient:
@@ -9,9 +8,14 @@ class HttpClient:
     def get_map(self):
         return self._env.get_elevation_map()
 
-    def add_virtual_object(self, file_name):
-        virtual_object = VirtualObject("../virtualobjects/" + file_name)
+    def add_virtual_object(self, virtual_object):
         self._env.add_virtual_object(virtual_object)
 
     def get_resolution(self):
         return self._env.get_resolution()
+
+    def get_existing_object_ids(self):
+        return self._env.get_all_object_ids()
+
+    def remove_virtual_object(self, virtual_object):
+        self._env.remove_virtual_object(virtual_object)

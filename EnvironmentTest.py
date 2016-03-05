@@ -51,7 +51,7 @@ class EnvironmentTest(unittest.TestCase):
     def test_remove_object_case1(self):
         virtual_object = VirtualObject("virtualobjects/test_object1.txt")
         self.env.add_virtual_object(virtual_object)
-        self.env.remove_virtual_object(virtual_object.get_id())
+        self.env.remove_virtual_object(virtual_object)
 
         self.assertFalse(self.env.is_in_object_region(Point(150, 150, 500)))
         self.assertFalse(self.env.is_in_object_region(Point(150, 250, 500)))
@@ -63,7 +63,7 @@ class EnvironmentTest(unittest.TestCase):
         virtual_object2 = VirtualObject("virtualobjects/test_object2.txt")
         self.env.add_virtual_object(virtual_object1)
         self.env.add_virtual_object(virtual_object2)
-        self.env.remove_virtual_object(virtual_object2.get_id())
+        self.env.remove_virtual_object(virtual_object2)
 
         self.assertTrue(self.env.is_in_object_region(Point(150, 150, 999)))
         self.assertFalse(self.env.is_in_object_region(Point(150, 150, 1001)))
@@ -82,6 +82,18 @@ class EnvironmentTest(unittest.TestCase):
         self.env.clear_map()
         self.assertFalse(self.env.is_in_object_region(Point(150, 150, 999)))
 
+    def test_get_all_object_ids(self):
+        self.assertEqual(self.env.get_all_object_ids(), [])
+
+        virtual_object1 = VirtualObject("virtualobjects/test_object1.txt")
+        virtual_object2 = VirtualObject("virtualobjects/test_object2.txt")
+        self.env.add_virtual_object(virtual_object1)
+        self.env.add_virtual_object(virtual_object2)
+
+        self.assertEqual(self.env.get_all_object_ids(), [1, 2])
+
+        self.env.remove_virtual_object(virtual_object1)
+        self.assertEqual(self.env.get_all_object_ids(), [2])
 
 if __name__ == '__main__':
     unittest.main()

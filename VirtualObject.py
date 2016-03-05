@@ -44,3 +44,9 @@ class VirtualObject:
 
     def get_id(self):
         return self._id
+
+    def __eq__(self, other):
+        return self._id == other._id
+
+    def __str__(self):
+        return str(self._id)

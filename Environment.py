@@ -57,28 +57,29 @@ class Environment:
         :return: True if the point is in object region
         :rtype: bool
         """
-        cell_x = int(point.x / self._res_x)
-        cell_y = int(point.y / self._res_y)
+        cell_x = int(point.x / self._res.x)
+        cell_y = int(point.y / self._res.y)
 
         if self._elevation_map[cell_x][cell_y] >= point.z:
             return True
         else:
             return False
 
-    def remove_virtual_object(self, virtual_object_id):
+    def remove_virtual_object(self, virtual_object):
         """
         Remove an object from map
-        :param virtual_object_id: the id of the object to be removed
-        :type virtual_object_id: int
+        :param virtual_object: the the object to be removed
+        :type virtual_object: VirtualObject
         """
-        virtual_object = self._object_dict.pop(virtual_object_id)
+        self._object_dict.pop(virtual_object.get_id())
+
         for cell in virtual_object.get_cells():
             x = cell.x
             y = cell.y
 
             # remove the occupying piece from the id map
             occupying_pieces = self._id_map[x][y]
-            occupying_pieces.pop(virtual_object_id)
+            occupying_pieces.pop(virtual_object.get_id())
 
             if len(occupying_pieces.values()) == 0:
                 # no more object, height is set to zero
@@ -109,3 +110,10 @@ class Environment:
 
     def get_resolution(self):
         return self._res
+
+    def get_all_object_ids(self):
+        """
+        :return: the list of ids of all objects currently in the environment
+        :rtype: list of int
+        """
+        return self._object_dict.keys()
