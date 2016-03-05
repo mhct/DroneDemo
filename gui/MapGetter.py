@@ -35,7 +35,7 @@ class MapGetter(QtCore.QThread):
         :param elevation_map: the given elevation map
         :type elevation_map: 2D list
         :param drone_position: the current position of the drone
-        :type __namedtuple
+        :type Point
         """
         res = self._http_client.get_resolution()
 

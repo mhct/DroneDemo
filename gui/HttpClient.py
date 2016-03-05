@@ -12,6 +12,9 @@ class HttpClient:
     def add_virtual_object(self, virtual_object):
         self._env.add_virtual_object(virtual_object)
 
+    def get_map_width(self):
+        return self._env.get_map_width()
+
     def get_resolution(self):
         return self._env.get_resolution()
 

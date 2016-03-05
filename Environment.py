@@ -1,5 +1,5 @@
 from VirtualObject import VirtualObject
-from Helper import Point, Resolution
+from Helper import Point, Resolution, MapWidth
 
 
 class Environment:
@@ -110,6 +110,9 @@ class Environment:
 
     def get_resolution(self):
         return self._res
+
+    def get_map_width(self):
+        return MapWidth(len(self._elevation_map), len(self._elevation_map[0]))
 
     def get_all_object_ids(self):
         """
