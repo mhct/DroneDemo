@@ -71,8 +71,7 @@ class View(QtGui.QWidget):
         grid.addWidget(update_map_button, 3, 0)
 
     def _open_popup(self):
-        self._popup = Popup(self._controller.get_existing_object_ids(), self._map_width, self._resolution,
-                            self._controller)
+        self._popup = Popup(self._map_width, self._resolution, self._controller)
 
     def _init_grid_layout(self):
         grid = QtGui.QGridLayout()

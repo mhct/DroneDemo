@@ -6,11 +6,11 @@ from PyQt4 import QtGui
 import pyqtgraph.opengl as gl
 
 from VirtualObject import VirtualObject
-from gui.SurfaceConstructor import SurfaceConstructor
+from gui.DrawingHelper import DrawingHelper
 
 
 class Popup(QtGui.QWidget):
-    def __init__(self, existing_object_ids, map_width, resolution, controller):
+    def __init__(self, map_width, resolution, controller):
         """
         :param existing_object_ids: the list of ids of existing objects
         :type existing_object_ids: list of int
@@ -25,14 +25,17 @@ class Popup(QtGui.QWidget):
         self._resolution = resolution
         self._controller = controller
 
-        self._init_components(existing_object_ids)
+        self._init_components()
 
-    def _init_components(self, existing_object_ids):
+    def _init_components(self):
         # use grid layout
         grid = self._init_grid_layout()
 
+        existing_object_ids = self._controller.get_existing_object_ids()
         self._init_checkboxes(existing_object_ids, grid)
-        self._init_3d_preview(existing_object_ids, grid)
+        self._init_3d_preview(grid)
+        self._add_existing_objects(existing_object_ids)
+        self._add_drone(self._controller.get_drone_state())
         self._init_buttons(grid)
 
         self.setLayout(grid)
@@ -91,7 +94,7 @@ class Popup(QtGui.QWidget):
         else:
             self._remove_object(virtual_object_id)
 
-    def _init_3d_preview(self, existing_object_ids, grid):
+    def _init_3d_preview(self, grid):
         self._map_3d = gl.GLViewWidget()
         self._map_3d.setCameraPosition(distance=80 * (self._resolution.x + self._resolution.y) / 2)
 
@@ -102,6 +105,7 @@ class Popup(QtGui.QWidget):
         self._map_3d.addItem(g)
         grid.addWidget(self._map_3d, 0, 3, 10, 10)
 
+    def _add_existing_objects(self, existing_object_ids):
         for virtual_object_id in existing_object_ids:
             self._add_object(virtual_object_id)
 
@@ -112,13 +116,17 @@ class Popup(QtGui.QWidget):
 
         self._map_3d.addItem(self._mesh[virtual_object_id])
 
+    def _add_drone(self, drone_state):
+        drone_mesh = DrawingHelper.create_drone_mesh(drone_state, self._resolution)
+        self._map_3d.addItem(drone_mesh)
+
     def _create_mesh(self, virtual_object_id):
         virtual_object = VirtualObject("../virtualobjects/main_object" + str(virtual_object_id) + ".txt")
 
         surfaces = []
         for cell in virtual_object.get_cells():
-            surfaces += SurfaceConstructor.construct_cube(cell.x * self._resolution.x, cell.y * self._resolution.y,
-                                                          self._resolution, cell.height)
+            surfaces += DrawingHelper.construct_cube(cell.x * self._resolution.x, cell.y * self._resolution.y,
+                                                     self._resolution, cell.height)
 
         object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=(0, 0, 1, 1), smooth=False, shader='shaded',
                                     glOptions='opaque')

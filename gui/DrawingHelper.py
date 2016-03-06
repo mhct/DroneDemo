@@ -1,7 +1,33 @@
+import numpy as np
+import pyqtgraph.opengl as gl
 
-class SurfaceConstructor:
+class DrawingHelper:
     def __init__(self):
         raise NotImplementedError("Never create an instance of this class.")
+
+    @staticmethod
+    def create_drone_mesh(drone_position, resolution):
+        drone_shape = DrawingHelper.construct_drone(drone_position, resolution)
+        drone_mesh = gl.GLMeshItem(vertexes=np.array(drone_shape), color=(1, 0, 0, 1), smooth=False, glOptions='opaque')
+        return drone_mesh
+
+    @staticmethod
+    def create_elevation_map_mesh(elevation_map, resolution):
+        surfaces = []
+        for x in range(len(elevation_map)):
+            for y in range(len(elevation_map[0])):
+                if elevation_map[x][y] > 0:
+                    cube = DrawingHelper.construct_cube(x * resolution.x, y * resolution.y, resolution,
+                                                        elevation_map[x][y])
+                    surfaces += cube
+
+        if len(surfaces) == 0:
+            object_mesh = None
+        else:
+            object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=(0, 0, 1, 1), smooth=False, shader='shaded',
+                                        glOptions='opaque')
+
+        return object_mesh
 
     @staticmethod
     def construct_drone(drone_position, res):

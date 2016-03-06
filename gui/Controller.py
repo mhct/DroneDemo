@@ -30,6 +30,9 @@ class Controller:
     def get_existing_object_ids(self):
         return self._http_client.get_existing_object_ids()
 
+    def get_drone_state(self):
+        return self._http_client.get_drone_position()
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     controller = Controller()

@@ -1,9 +1,8 @@
 import numpy as np
 from PyQt4 import QtCore
-from SurfaceConstructor import SurfaceConstructor
+from DrawingHelper import DrawingHelper
 
 from HttpClient import HttpClient
-import pyqtgraph.opengl as gl
 from Helper import Point, Mesh
 
 
@@ -41,28 +40,6 @@ class MapGetter(QtCore.QThread):
         :type Point
         """
         res = self._http_client.get_resolution()
-        object_mesh = self._create_object_mesh(elevation_map, res)
-        drone_mesh = self._create_drone_mesh(drone_position, res)
+        object_mesh = DrawingHelper.create_elevation_map_mesh(elevation_map, res)
+        drone_mesh = DrawingHelper.create_drone_mesh(drone_position, res)
         return Mesh(object_mesh, drone_mesh)
-
-    def _create_drone_mesh(self, drone_position, resolution):
-        drone_shape = SurfaceConstructor.construct_drone(drone_position, resolution)
-        drone_mesh = gl.GLMeshItem(vertexes=np.array(drone_shape), color=(1, 0, 0, 1), smooth=False, glOptions='opaque')
-        return drone_mesh
-
-    def _create_object_mesh(self, elevation_map, resolution):
-        surfaces = []
-        for x in range(len(elevation_map)):
-            for y in range(len(elevation_map[0])):
-                if elevation_map[x][y] > 0:
-                    cube = SurfaceConstructor.construct_cube(x * resolution.x, y * resolution.y, resolution,
-                                                             elevation_map[x][y])
-                    surfaces += cube
-
-        if len(surfaces) == 0:
-            object_mesh = None
-        else:
-            object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=(0, 0, 1, 1), smooth=False, shader='shaded',
-                                        glOptions='opaque')
-
-        return object_mesh
