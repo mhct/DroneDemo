@@ -4,6 +4,8 @@ import pyqtgraph.opengl as gl
 from PyQt4 import QtGui
 from PyQt4.QtCore import Qt
 
+from gui.Popup import Popup
+
 
 class View(QtGui.QWidget):
     def __init__(self, map_width, resolution, controller):
@@ -12,6 +14,8 @@ class View(QtGui.QWidget):
         :type map_width: MapWidth
         :param resolution: The resolution of each cell of the map in three coordinates
         :type resolution: Resolution
+        :param controller: the controller
+        :type controller: Controller
         """
         super(View, self).__init__()
         self._map_width = map_width
@@ -31,9 +35,9 @@ class View(QtGui.QWidget):
 
         # initialize components
         self._init_buttons(grid)
-        self._init_list_widget(grid)
+        self._init_console(grid)
         self._init_3d_map(grid)
-        self._init_object_checkbox(grid)
+        self._init_object_list_console(grid)
 
         # set the layout
         self.setLayout(grid)
@@ -41,25 +45,9 @@ class View(QtGui.QWidget):
         self.setGeometry(100, 0, 1024, 720)
         self.show()
 
-    def _init_object_checkbox(self, grid):
-        scroll = QtGui.QScrollArea()
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-
-        all_checkboxes = QtGui.QWidget(scroll)
-        layout = QtGui.QVBoxLayout(all_checkboxes)
-
-        # TODO move this logic to controller?
-        file_count = len([f for f in os.walk("../virtualobjects").next()[2] if f[0:11] == "main_object"])
-
-        self._check_boxes = []
-        for i in range(1, file_count + 1):
-            checkbox = QtGui.QCheckBox("Object_" + str(i))
-            layout.addWidget(checkbox)
-            self._check_boxes.append(checkbox)
-
-        scroll.setWidget(all_checkboxes)
-        grid.addWidget(scroll, 4, 0, 2, 3)
+    def _init_object_list_console(self, grid):
+        self._object_list_console = QtGui.QListWidget()
+        grid.addWidget(self._object_list_console, 4, 0, 2, 3)
 
     def _init_3d_map(self, grid):
         self._map_3d = gl.GLViewWidget()
@@ -72,19 +60,19 @@ class View(QtGui.QWidget):
         self._map_3d.addItem(g)
         grid.addWidget(self._map_3d, 1, 3, 10, 10)
 
-    def _init_list_widget(self, grid):
-        self.list_widget = QtGui.QListWidget()
-        grid.addWidget(self.list_widget, 13, 3, 3, 10)
+    def _init_console(self, grid):
+        self._console = QtGui.QListWidget()
+        grid.addWidget(self._console, 13, 3, 3, 10)
 
     # noinspection PyUnresolvedReferences
     def _init_buttons(self, grid):
-        set_button = QtGui.QPushButton("Set")
-        set_button.clicked.connect(self._controller.set_map)
-        grid.addWidget(set_button, 3, 0)
+        update_map_button = QtGui.QPushButton("Update Map")
+        update_map_button.clicked.connect(self._open_popup)
+        grid.addWidget(update_map_button, 3, 0)
 
-        # TODO design preview
-        preview_button = QtGui.QPushButton("Preview")
-        grid.addWidget(preview_button, 3, 1)
+    def _open_popup(self):
+        self._popup = Popup(self._controller.get_existing_object_ids(), self._map_width, self._resolution,
+                            self._controller)
 
     def _init_grid_layout(self):
         grid = QtGui.QGridLayout()
@@ -105,9 +93,31 @@ class View(QtGui.QWidget):
         return checked_boxes
 
     def _write_to_screen(self, message):
-        self.list_widget.addItem(unicode(message))
+        self._console.addItem(unicode(message))
 
-    def draw_3d_map(self, mesh):
+    def draw_objects_and_drone(self, mesh):
+        self._remove_previous_mesh()
+        self._update_stored_mesh(mesh)
+        self._add_new_virtual_object_mesh()
+        self._add_new_drone_mesh()
+        self._write_to_screen("updated map")
+
+    def _update_stored_mesh(self, mesh):
+        self._mesh = mesh
+
+    def _add_new_drone_mesh(self):
+        if self._mesh.drone is not None:
+            self._mesh.drone.translate(-self._map_width.x * self._resolution.x / 2,
+                                       -self._map_width.y * self._resolution.y / 2, 0, True)
+            self._map_3d.addItem(self._mesh.drone)
+
+    def _add_new_virtual_object_mesh(self):
+        if self._mesh.virtual_objects is not None:
+            self._mesh.virtual_objects.translate(-self._map_width.x * self._resolution.x / 2,
+                                                 -self._map_width.y * self._resolution.y / 2, 0, True)
+            self._map_3d.addItem(self._mesh.virtual_objects)
+
+    def _remove_previous_mesh(self):
         if self._mesh is not None:
             if self._mesh.virtual_objects is not None:
                 self._map_3d.removeItem(self._mesh.virtual_objects)
@@ -115,15 +125,7 @@ class View(QtGui.QWidget):
             if self._mesh.drone is not None:
                 self._map_3d.removeItem(self._mesh.drone)
 
-        self._mesh = mesh
-        if self._mesh.virtual_objects is not None:
-            self._mesh.virtual_objects.translate(-self._map_width.x * self._resolution.x / 2,
-                                                 -self._map_width.y * self._resolution.y / 2, 0, True)
-            self._map_3d.addItem(self._mesh.virtual_objects)
-
-        if self._mesh.drone is not None:
-            self._mesh.drone.translate(-self._map_width.x * self._resolution.x / 2,
-                                       -self._map_width.y * self._resolution.y / 2, 0, True)
-            self._map_3d.addItem(self._mesh.drone)
-
-        self._write_to_screen("updated map")
+    def update_list_object_ids(self, object_ids):
+        self._object_list_console.clear()
+        for object_id in object_ids:
+            self._object_list_console.addItem(unicode("Object_" + str(object_id)))
