@@ -1,6 +1,7 @@
 import numpy as np
 import pyqtgraph.opengl as gl
 
+
 class DrawingHelper:
     def __init__(self):
         raise NotImplementedError("Never create an instance of this class.")

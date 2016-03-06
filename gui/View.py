@@ -47,7 +47,13 @@ class View(QtGui.QWidget):
 
     def _init_object_list_console(self, grid):
         self._object_list_console = QtGui.QListWidget()
-        grid.addWidget(self._object_list_console, 4, 0, 2, 3)
+        grid.addWidget(self._object_list_console, 1, 0, 2, 3)
+
+    # noinspection PyUnresolvedReferences
+    def _init_buttons(self, grid):
+        update_map_button = QtGui.QPushButton("Update Map")
+        update_map_button.clicked.connect(self._open_popup)
+        grid.addWidget(update_map_button, 0, 0, 1, 3)
 
     def _init_3d_map(self, grid):
         self._map_3d = gl.GLViewWidget()
@@ -58,17 +64,11 @@ class View(QtGui.QWidget):
         g.setSize(self._map_width.x, self._map_width.y)
 
         self._map_3d.addItem(g)
-        grid.addWidget(self._map_3d, 1, 3, 10, 10)
+        grid.addWidget(self._map_3d, 0, 3, 10, 10)
 
     def _init_console(self, grid):
         self._console = QtGui.QListWidget()
         grid.addWidget(self._console, 13, 3, 3, 10)
-
-    # noinspection PyUnresolvedReferences
-    def _init_buttons(self, grid):
-        update_map_button = QtGui.QPushButton("Update Map")
-        update_map_button.clicked.connect(self._open_popup)
-        grid.addWidget(update_map_button, 3, 0)
 
     def _open_popup(self):
         self._popup = Popup(self._map_width, self._resolution, self._controller)
