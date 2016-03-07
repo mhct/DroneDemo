@@ -8,7 +8,7 @@ from gui.MapSetter import MapSetter
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        patcher = patch('gui.HttpClient.HttpClient')
+        patcher = patch('gui.HttpDroneInterface.HttpDroneInterface')
         mock_http_client = patcher.start()
         self._map_setter = MapSetter(mock_http_client)
         self.virtual_object1 = VirtualObject("../virtualobjects/main_object1.txt")

@@ -1,12 +1,12 @@
 from VirtualObject import VirtualObject
-from HttpClient import HttpClient
+from HttpDroneInterface import HttpDroneInterface
 
 
 class MapSetter:
     def __init__(self, http_client):
         """
         :param http_client: the http client
-        :type http_client: HttpClient
+        :type http_client: HttpDroneInterface
         """
         self._http_client = http_client
 

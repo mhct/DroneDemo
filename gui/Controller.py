@@ -2,7 +2,7 @@ import sys
 from PyQt4 import QtGui
 
 from View import View
-from gui.HttpClient import HttpClient
+from gui.HttpDroneInterface import HttpDroneInterface
 from gui.MapGetter import MapGetter
 from gui.MapSetter import MapSetter
 
@@ -10,7 +10,7 @@ from gui.MapSetter import MapSetter
 class Controller:
     def __init__(self):
         # initialize the client
-        self._http_client = HttpClient()
+        self._http_client = HttpDroneInterface()
         # initialize the view
         self._view = View(self._http_client.get_map_width(), self._http_client.get_resolution(), self)
         # thread that constantly request map and drone position after each second

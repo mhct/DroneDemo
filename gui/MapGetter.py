@@ -2,7 +2,7 @@ import numpy as np
 from PyQt4 import QtCore
 from DrawingHelper import DrawingHelper
 
-from HttpClient import HttpClient
+from HttpDroneInterface import HttpDroneInterface
 from Helper import Point, Mesh
 
 
@@ -12,7 +12,7 @@ class MapGetter(QtCore.QThread):
     def __init__(self, http_client):
         """
         :param http_client: the http client instance
-        :type http_client: HttpClient
+        :type http_client: HttpDroneInterface
         :return:
         :rtype:
         """
