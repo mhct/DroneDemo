@@ -35,6 +35,7 @@ class CellData:
         :param virtual_object: the virtual object to be removed
         :type virtual_object: VirtualObject
         """
+        # TODO use hashcode instead of virtual_object here
         virtual_object_hash = hash(virtual_object)
         self._object_height.pop(virtual_object_hash)
 

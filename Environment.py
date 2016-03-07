@@ -69,18 +69,21 @@ class Environment:
 
         return self._grid_map[x][y].is_occupied(point.z)
 
+    def remove_virtual_object_by_hashcode(self, hashcode):
+        virtual_object = self._object_dict.pop(hashcode)
+
+        for cell in virtual_object.get_cells():
+            x = cell.x
+            y = cell.y
+            self._grid_map[x][y].remove_virtual_object(virtual_object)
+
     def remove_virtual_object(self, virtual_object):
         """
         Remove an object from map
         :param virtual_object: the the object to be removed
         :type virtual_object: VirtualObject
         """
-        self._object_dict.pop(hash(virtual_object))
-
-        for cell in virtual_object.get_cells():
-            x = cell.x
-            y = cell.y
-            self._grid_map[x][y].remove_virtual_object(virtual_object)
+        self.remove_virtual_object_by_hashcode(hash(virtual_object))
 
     def clear_map(self):
         for x in range(self._map_width.x):

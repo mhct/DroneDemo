@@ -18,7 +18,7 @@ class MyTestCase(unittest.TestCase):
     def test_get_to_be_removed_objects(self):
         new_objects = [3]
         existing_objects = [1, 3]
-        self.assertListEqual(self._map_setter._get_to_be_removed_objects(existing_objects, new_objects),
+        self.assertListEqual(self._map_setter._get_to_be_removed_object_hashcodes(existing_objects, new_objects),
                              [self.virtual_object1])
 
 if __name__ == '__main__':

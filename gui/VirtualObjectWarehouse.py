@@ -1,5 +1,5 @@
 import os
-
+from bidict import bidict
 from VirtualObject import VirtualObject
 
 
@@ -10,12 +10,13 @@ class VirtualObjectWarehouse:
 
     def __init__(self, directory, prefix):
         self._filename_object_dict = self._scan_object(directory, prefix)
-        self._hashcode_filename_dict = {}
+        self._hashcode_filename_dict = bidict()
 
     def _scan_object(self, directory, prefix):
         """
         Scan all input files whose names starting with the given prefix, create virtual object from those files and
-        store them in a dictionary where keys are file names and values are the created virtual objects
+        store them in a dictionary where keys are file names and values are the created virtual objects. If two files
+        contain the same object, only the first file (in the scanning order) is added to the warehouse.
         :param directory: the directory to be scanned
         :type directory: str
         :param prefix: the prefix
@@ -25,9 +26,11 @@ class VirtualObjectWarehouse:
         """
         file_list = [f for f in os.walk(directory).next()[2] if f.startswith(prefix)]
 
-        filename_object_dict = {}
+        filename_object_dict = bidict()
         for file_name in file_list:
-            filename_object_dict[file_name] = VirtualObject(directory + "/" + file_name)
+            virtual_object = VirtualObject(directory + "/" + file_name)
+            if virtual_object not in filename_object_dict.values():
+                filename_object_dict[file_name] = virtual_object
 
         return filename_object_dict
 
@@ -61,3 +64,24 @@ class VirtualObjectWarehouse:
         """
         file_name = self._hashcode_filename_dict[hashcode]
         return self._filename_object_dict[file_name]
+
+    def get_all_object_file_names(self):
+        return self._filename_object_dict.keys()
+
+    def get_file_name_by_hashcode(self, hashcode):
+        if hashcode not in self._hashcode_filename_dict.keys():
+            raise ValueError("The hashcode doesn't exist.")
+
+        return self._hashcode_filename_dict[hashcode]
+
+    def get_hashcode_by_file_name(self, file_name):
+        if file_name not in self._hashcode_filename_dict.values():
+            raise ValueError("The file name doesn't exist.")
+
+        return self._hashcode_filename_dict.inv[file_name]
+
+    def update_hashcode(self, file_name, hashcode):
+        if file_name not in self._filename_object_dict.keys():
+            raise ValueError("The file name doesn't exist.")
+
+        self._hashcode_filename_dict[hashcode] = file_name

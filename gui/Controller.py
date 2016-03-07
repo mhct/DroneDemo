@@ -26,20 +26,32 @@ class Controller:
         self._map_getter.start()
 
         # map setter, to update the map using the input from users
-        self._map_setter = MapSetter(self._drone_interface)
+        self._map_setter = MapSetter(self._drone_interface, self._warehouse)
 
     def _update_drone_info(self, mesh, object_ids):
         self._view.draw_objects_and_drone(mesh)
-        self._view.update_list_object_ids(object_ids)
+        self._view.update_added_object_list(object_ids)
 
-    def set_map(self, object_ids):
-        self._map_setter.set_map(object_ids)
+    def set_map(self, file_names):
+        self._map_setter.set_map(file_names)
 
     def get_existing_object_ids(self):
         return self._drone_interface.get_existing_object_ids()
 
     def get_drone_state(self):
         return self._drone_interface.get_drone_position()
+
+    def get_all_object_file_names(self):
+        return self._warehouse.get_all_object_file_names()
+
+    def get_file_name_by_hashcode(self, hashcode):
+        return self._warehouse.get_file_name_by_hashcode(hashcode)
+
+    def get_object_by_file_name(self, file_name):
+        return self._warehouse.get_virtual_object_by_filename(file_name)
+
+    def get_object_by_hashcode(self, hashcode):
+        return self._warehouse.get_virtual_object_by_hashcode(hashcode)
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

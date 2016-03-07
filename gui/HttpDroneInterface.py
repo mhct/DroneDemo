@@ -10,10 +10,10 @@ class HttpDroneInterface:
         return self._env.get_elevation_map()
 
     def add_virtual_object(self, virtual_object):
-        self._env.add_virtual_object(virtual_object)
+        return self._env.add_virtual_object(virtual_object)
 
-    def remove_virtual_object(self, virtual_object):
-        self._env.remove_virtual_object(virtual_object)
+    def remove_virtual_object(self, virtual_object_hashcode):
+        self._env.remove_virtual_object_by_hashcode(virtual_object_hashcode)
 
     def get_map_params(self):
         return self._env.get_map_params()

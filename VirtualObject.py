@@ -31,7 +31,7 @@ class VirtualObject:
 
         # the first line of the input file defines the name of the object
         first_line = f.readline()
-        self._name = first_line
+        self._name = first_line.strip("\n")
 
         cells = []
         line = f.readline()

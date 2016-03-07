@@ -71,6 +71,7 @@ class View(QtGui.QWidget):
         grid.addWidget(self._console, 13, 3, 3, 10)
 
     def _open_popup(self):
+        # TODO use map params instead of width and resolution
         self._popup = Popup(self._map_width, self._resolution, self._controller)
 
     def _init_grid_layout(self):
@@ -124,7 +125,7 @@ class View(QtGui.QWidget):
             if self._mesh.drone is not None:
                 self._map_3d.removeItem(self._mesh.drone)
 
-    def update_list_object_ids(self, object_ids):
+    def update_added_object_list(self, object_ids):
         self._object_list_console.clear()
         for object_id in object_ids:
-            self._object_list_console.addItem(unicode("Object_" + str(object_id)))
+            self._object_list_console.addItem(unicode(self._controller.get_object_by_hashcode(object_id).get_name()))
