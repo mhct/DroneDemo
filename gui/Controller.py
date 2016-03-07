@@ -5,20 +5,28 @@ from View import View
 from gui.HttpDroneInterface import HttpDroneInterface
 from gui.MapGetter import MapGetter
 from gui.MapSetter import MapSetter
+from gui.VirtualObjectWarehouse import VirtualObjectWarehouse
 
 
 class Controller:
     def __init__(self):
         # initialize the client
-        self._http_client = HttpDroneInterface()
+        self._drone_interface = HttpDroneInterface()
+
+        # initialize the virtual object warehouse
+        self._warehouse = VirtualObjectWarehouse("../virtualobjects", "virtual_object")
+
         # initialize the view
-        self._view = View(self._http_client.get_map_width(), self._http_client.get_resolution(), self)
+        map_params = self._drone_interface.get_map_params()
+        self._view = View(map_params.map_width, map_params.resolution, self)
+
         # thread that constantly request map and drone position after each second
-        self._map_getter = MapGetter(self._http_client)
+        self._map_getter = MapGetter(self._drone_interface)
         self._map_getter.map_signal.connect(self._update_drone_info)
         self._map_getter.start()
+
         # map setter, to update the map using the input from users
-        self._map_setter = MapSetter(self._http_client)
+        self._map_setter = MapSetter(self._drone_interface)
 
     def _update_drone_info(self, mesh, object_ids):
         self._view.draw_objects_and_drone(mesh)
@@ -28,10 +36,10 @@ class Controller:
         self._map_setter.set_map(object_ids)
 
     def get_existing_object_ids(self):
-        return self._http_client.get_existing_object_ids()
+        return self._drone_interface.get_existing_object_ids()
 
     def get_drone_state(self):
-        return self._http_client.get_drone_position()
+        return self._drone_interface.get_drone_position()
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)

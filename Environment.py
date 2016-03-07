@@ -1,5 +1,6 @@
+from CellData import CellData
 from VirtualObject import VirtualObject
-from Helper import Point, Resolution, MapWidth
+from Helper import Point, Resolution, MapWidth, MapParams, Cell
 
 
 class Environment:
@@ -7,63 +8,66 @@ class Environment:
     Model of the environment.
     """
 
-    def __init__(self, size_x, size_y, res_x, res_y):
+    def __init__(self, map_width, resolution):
         """
         Initialize an empty map and an empty list of objects.
-
-        :param size_x: number of cells in x axis
-        :type size_x: int
-        :param size_y: number of cells in y axis
-        :type size_y: int
-        :param res_x: the resolution of one cell in x axis (in millimeters)
-        :type res_x: int
-        :param res_y: the resolution of one cell in y axis (in millimeters)
-        :type res_y: int
+        :param map_width: the width of the map in x and y (or the number of cells in each row and each column)
+        :type map_width: __namedtuple MapWidth
+        :param resolution: the resolution of each cell in x and y
+        :type resolution: __namedtuple Resolution
+        :return:
+        :rtype:
         """
-        # elevation map that stores the height of objects for quick querying, initialize all cells as 0
-        self._elevation_map = [[0 for i in range(size_y)] for i in range(size_x)]
-
-        # id map, each cell is a list that stores the id and the height of objects that occupied the cell,
-        # is empty initially
-        self._id_map = [[{} for i in range(size_y)] for i in range(size_x)]
-
-        # the dictionary where key are object ids, values are the object instance
-        self._object_dict = {}
-
         # store cell resolution
-        self._res = Resolution(res_x, res_y)
+        self._res = resolution
+
+        # store the map width
+        self._map_width = map_width
+
+        # the grid map
+        self._grid_map = [[CellData() for i in range(self._map_width.x)] for i in range(self._map_width.y)]
+
+        # the dictionary where key are object hash code, values are the object instance
+        self._object_dict = {}
 
     def add_virtual_object(self, virtual_object):
         """
-        Add an object to the environment
+        Add an object to the environment, return the id of the object, which is the hashcode of this of object on the
+        server
         :param virtual_object: the object to be added
         :type virtual_object: VirtualObject
+        :return the id of the added object, which is the hashcode of the object on the server
+        :rtype hashcode
         """
-        self._object_dict[virtual_object.get_id()] = virtual_object
+        virtual_object_hash = hash(virtual_object)
+
+        if virtual_object_hash in self._object_dict.keys():
+            raise ValueError("The object is already added to the grid map")
+
+        self._object_dict[virtual_object_hash] = virtual_object
 
         for cell in virtual_object.get_cells():
             x = cell.x
             y = cell.y
-            occupying_pieces = self._id_map[x][y]
-            occupying_pieces[virtual_object.get_id()] = cell.height
-            # the height in the elevation map is of the highest object
-            self._elevation_map[x][y] = max(occupying_pieces.values())
+            self._grid_map[x][y].add_virtual_object(virtual_object, cell.height)
 
-    def is_in_object_region(self, point):
+        return virtual_object_hash
+
+    def is_occupied(self, point):
         """
-        Check whether a point is in object region
+        Check whether a point in the environment is occupied by objects
         :param point: the point to be checked
         :type point: Point
-        :return: True if the point is in object region
+        :return: True if the point is occupied by objects
         :rtype: bool
         """
-        cell_x = int(point.x / self._res.x)
-        cell_y = int(point.y / self._res.y)
+        x = int(point.x / self._res.x)
+        y = int(point.y / self._res.y)
 
-        if self._elevation_map[cell_x][cell_y] >= point.z:
-            return True
-        else:
-            return False
+        if x < 0 or x >= self._map_width.x or y < 0 or y >= self._map_width.y:
+            raise ValueError("The input point is not in the modeled region.")
+
+        return self._grid_map[x][y].is_occupied(point.z)
 
     def remove_virtual_object(self, virtual_object):
         """
@@ -71,48 +75,27 @@ class Environment:
         :param virtual_object: the the object to be removed
         :type virtual_object: VirtualObject
         """
-        self._object_dict.pop(virtual_object.get_id())
+        self._object_dict.pop(hash(virtual_object))
 
         for cell in virtual_object.get_cells():
             x = cell.x
             y = cell.y
-
-            # remove the occupying piece from the id map
-            occupying_pieces = self._id_map[x][y]
-            occupying_pieces.pop(virtual_object.get_id())
-
-            if len(occupying_pieces.values()) == 0:
-                # no more object, height is set to zero
-                self._elevation_map[x][y] = 0
-            else:
-                self._elevation_map[x][y] = max(occupying_pieces.values())
+            self._grid_map[x][y].remove_virtual_object(virtual_object)
 
     def clear_map(self):
-        self._clear_elevation_map()
-        self._clear_id_map()
-        self._clear_object_dict()
-
-    def _clear_elevation_map(self):
-        x = len(self._elevation_map)
-        y = len(self._elevation_map[0])
-        self._elevation_map = [[0 for i in range(y)] for i in range(x)]
-
-    def _clear_id_map(self):
-        x = len(self._id_map)
-        y = len(self._id_map)
-        self._id_map = [[{} for i in range(y)] for i in range(x)]
-
-    def _clear_object_dict(self):
-        self._object_dict = {}
+        for x in range(self._map_width.x):
+            for y in range(self._map_width.y):
+                self._grid_map[x][y].clear_cell()
 
     def get_elevation_map(self):
-        return self._elevation_map
+        cells = []
+        for x in range(self._map_width.x):
+            for y in range(self._map_width.y):
+                cells.append(Cell(x, y, self._grid_map[x][y].get_max_height()))
+        return cells
 
-    def get_resolution(self):
-        return self._res
-
-    def get_map_width(self):
-        return MapWidth(len(self._elevation_map), len(self._elevation_map[0]))
+    def get_map_params(self):
+        return MapParams(self._map_width, self._res)
 
     def get_all_object_ids(self):
         """

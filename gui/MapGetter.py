@@ -9,25 +9,25 @@ from Helper import Point, Mesh
 class MapGetter(QtCore.QThread):
     map_signal = QtCore.pyqtSignal(object, object)
 
-    def __init__(self, http_client):
+    def __init__(self, drone_interface):
         """
-        :param http_client: the http client instance
-        :type http_client: HttpDroneInterface
+        :param drone_interface: the http client instance
+        :type drone_interface: HttpDroneInterface
         :return:
         :rtype:
         """
         QtCore.QThread.__init__(self)
-        self._http_client = http_client
+        self._drone_interface = drone_interface
 
     def run(self):
         """
         Update map for each one second
         """
         while True:
-            elevation_map = self._http_client.get_map()
-            drone_position = self._http_client.get_drone_position()
+            elevation_map = self._drone_interface.get_elevation_map()
+            drone_position = self._drone_interface.get_drone_position()
             mesh = self._generate_mesh(elevation_map, drone_position)
-            object_ids = self._http_client.get_existing_object_ids()
+            object_ids = self._drone_interface.get_existing_object_ids()
             self.map_signal.emit(mesh, object_ids)
             self.sleep(1)
 
@@ -39,7 +39,8 @@ class MapGetter(QtCore.QThread):
         :param drone_position: the current position of the drone
         :type Point
         """
-        res = self._http_client.get_resolution()
+        res = self._drone_interface.get_map_params().resolution
         object_mesh = DrawingHelper.create_elevation_map_mesh(elevation_map, res)
         drone_mesh = DrawingHelper.create_drone_mesh(drone_position, res)
+
         return Mesh(object_mesh, drone_mesh)

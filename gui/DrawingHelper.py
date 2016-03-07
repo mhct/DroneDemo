@@ -15,12 +15,11 @@ class DrawingHelper:
     @staticmethod
     def create_elevation_map_mesh(elevation_map, resolution):
         surfaces = []
-        for x in range(len(elevation_map)):
-            for y in range(len(elevation_map[0])):
-                if elevation_map[x][y] > 0:
-                    cube = DrawingHelper.construct_cube(x * resolution.x, y * resolution.y, resolution,
-                                                        elevation_map[x][y])
-                    surfaces += cube
+        for cell in elevation_map:
+            if cell.height > 0:
+                cube = DrawingHelper.construct_cube(cell.x * resolution.x, cell.y * resolution.y, resolution,
+                                                    cell.height)
+                surfaces += cube
 
         if len(surfaces) == 0:
             object_mesh = None
