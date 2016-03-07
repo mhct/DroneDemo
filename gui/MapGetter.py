@@ -27,8 +27,8 @@ class MapGetter(QtCore.QThread):
             elevation_map = self._drone_interface.get_elevation_map()
             drone_position = self._drone_interface.get_drone_position()
             mesh = self._generate_mesh(elevation_map, drone_position)
-            object_ids = self._drone_interface.get_existing_object_ids()
-            self.map_signal.emit(mesh, object_ids)
+            object_hashcodes = self._drone_interface.get_existing_object_hashcodes()
+            self.map_signal.emit(mesh, object_hashcodes)
             self.sleep(1)
 
     def _generate_mesh(self, elevation_map, drone_position):

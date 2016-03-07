@@ -28,15 +28,15 @@ class Controller:
         # map setter, to update the map using the input from users
         self._map_setter = MapSetter(self._drone_interface, self._warehouse)
 
-    def _update_drone_info(self, mesh, object_ids):
+    def _update_drone_info(self, mesh, object_hashcodes):
         self._view.draw_objects_and_drone(mesh)
-        self._view.update_added_object_list(object_ids)
+        self._view.update_added_object_list(object_hashcodes)
 
     def set_map(self, file_names):
         self._map_setter.set_map(file_names)
 
-    def get_existing_object_ids(self):
-        return self._drone_interface.get_existing_object_ids()
+    def get_existing_object_hashcodes(self):
+        return self._drone_interface.get_existing_object_hashcodes()
 
     def get_drone_state(self):
         return self._drone_interface.get_drone_position()

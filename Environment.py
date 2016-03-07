@@ -32,11 +32,10 @@ class Environment:
 
     def add_virtual_object(self, virtual_object):
         """
-        Add an object to the environment, return the id of the object, which is the hashcode of this of object on the
-        server
+        Add an object to the environment, return the hashcode of the object on the server
         :param virtual_object: the object to be added
         :type virtual_object: VirtualObject
-        :return the id of the added object, which is the hashcode of the object on the server
+        :return the hashcode of the object on the server
         :rtype hashcode
         """
         virtual_object_hash = hash(virtual_object)
@@ -100,9 +99,9 @@ class Environment:
     def get_map_params(self):
         return MapParams(self._map_width, self._res)
 
-    def get_all_object_ids(self):
+    def get_all_object_hashcodes(self):
         """
-        :return: the list of ids of all objects currently in the environment
+        :return: the list of hashcodes of all objects currently in the environment
         :rtype: list of int
         """
         return self._object_dict.keys()

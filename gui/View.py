@@ -125,7 +125,7 @@ class View(QtGui.QWidget):
             if self._mesh.drone is not None:
                 self._map_3d.removeItem(self._mesh.drone)
 
-    def update_added_object_list(self, object_ids):
+    def update_added_object_list(self, object_hashcodes):
         self._object_list_console.clear()
-        for object_id in object_ids:
-            self._object_list_console.addItem(unicode(self._controller.get_object_by_hashcode(object_id).get_name()))
+        for hashcode in object_hashcodes:
+            self._object_list_console.addItem(unicode(self._controller.get_object_by_hashcode(hashcode).get_name()))

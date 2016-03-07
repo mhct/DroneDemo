@@ -18,8 +18,8 @@ class HttpDroneInterface:
     def get_map_params(self):
         return self._env.get_map_params()
 
-    def get_existing_object_ids(self):
-        return self._env.get_all_object_ids()
+    def get_existing_object_hashcodes(self):
+        return self._env.get_all_object_hashcodes()
 
     def get_drone_position(self):
         return Point(0, 0, 0)

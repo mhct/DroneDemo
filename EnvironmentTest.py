@@ -78,15 +78,15 @@ class EnvironmentTest(unittest.TestCase):
         self.assertFalse(self.env.is_occupied(Point(150, 150, 999)))
 
     def test_get_all_object_ids(self):
-        self.assertEqual(self.env.get_all_object_ids(), [])
+        self.assertEqual(self.env.get_all_object_hashcodes(), [])
 
         self.env.add_virtual_object(self._virtual_object1)
         self.env.add_virtual_object(self._virtual_object2)
 
-        self.assertEqual(self.env.get_all_object_ids(), [hash(self._virtual_object1), hash(self._virtual_object2)])
+        self.assertEqual(self.env.get_all_object_hashcodes(), [hash(self._virtual_object1), hash(self._virtual_object2)])
 
         self.env.remove_virtual_object(self._virtual_object1)
-        self.assertEqual(self.env.get_all_object_ids(), [hash(self._virtual_object2)])
+        self.assertEqual(self.env.get_all_object_hashcodes(), [hash(self._virtual_object2)])
 
 if __name__ == '__main__':
     unittest.main()

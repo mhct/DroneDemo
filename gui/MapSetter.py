@@ -13,15 +13,15 @@ class MapSetter:
 
     def set_map(self, new_object_file_names):
         """
-        Add all objects that have ids in the object_id_list to the drone's virtual environment, remove all objects
-        currently in the drone's virtual environment but not in the object_id_list
-        :param new_object_ids: the list of the ids of objects
-        :type new_object_ids: list of int
+        Add all objects in the file list to the drone's virtual environment, remove all objects currently in the
+        drone's virtual environment but not in the file list.
+        :param new_object_file_names: the list of the files that contain to be added objects
+        :type new_object_file_names: list of str
         """
-        # we get the object id again because it can be the case that another popup window is opened and update the
-        # map of the drone before the current popup window update the map
-        existing_object_ids = self._http_client.get_existing_object_ids()
-        existing_object_file_names = self._get_file_names_by_hashcode(existing_object_ids)
+        # we get the object hashcodes again because it can be the case that another popup window is opened and update
+        # the map of the drone before the current popup window update the map
+        existing_object_hashcodes = self._http_client.get_existing_object_hashcodes()
+        existing_object_file_names = self._get_file_names_by_hashcode(existing_object_hashcodes)
 
         to_be_added_objects_file_names = self._get_to_be_added_object_file_names(existing_object_file_names,
                                                                                  new_object_file_names)

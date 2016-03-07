@@ -11,12 +11,6 @@ from gui.DrawingHelper import DrawingHelper
 
 class Popup(QtGui.QWidget):
     def __init__(self, map_width, resolution, controller):
-        """
-        :param existing_object_ids: the list of ids of existing objects
-        :type existing_object_ids: list of int
-        :param controller: the controller
-        :type controller: Controller
-        """
         super(Popup, self).__init__()
         # a dictionary where keys are the file name, values are object meshes
         self._mesh = {}
@@ -31,9 +25,9 @@ class Popup(QtGui.QWidget):
         # use grid layout
         grid = self._init_grid_layout()
 
-        existing_object_ids = self._controller.get_existing_object_ids()
+        existing_object_hashcodes = self._controller.get_existing_object_hashcodes()
         self._init_3d_preview(grid)
-        self._init_checkboxes(existing_object_ids, grid)
+        self._init_checkboxes(existing_object_hashcodes, grid)
         self._add_drone(self._controller.get_drone_state())
         self._init_buttons(grid)
 
@@ -56,7 +50,7 @@ class Popup(QtGui.QWidget):
         grid.setSpacing(10)
         return grid
 
-    def _init_checkboxes(self, existing_object_ids, grid):
+    def _init_checkboxes(self, existing_object_hashcodes, grid):
         scroll = QtGui.QScrollArea()
 
         all_checkboxes = QtGui.QWidget(scroll)
@@ -71,8 +65,8 @@ class Popup(QtGui.QWidget):
             self._check_boxes[file_name] = checkbox
             checkbox.stateChanged.connect(partial(self._checkbox_changed, checkbox, file_name))
 
-        for existing_id in existing_object_ids:
-            file_name = self._controller.get_file_name_by_hashcode(existing_id)
+        for hashcode in existing_object_hashcodes:
+            file_name = self._controller.get_file_name_by_hashcode(hashcode)
             self._check_boxes[file_name].toggle()
 
         scroll.setWidget(all_checkboxes)
@@ -133,5 +127,5 @@ class Popup(QtGui.QWidget):
 
         self._mesh[file_name] = object_mesh
 
-    def _remove_object(self, virtual_object_id):
-        self._map_3d.removeItem(self._mesh[virtual_object_id])
+    def _remove_object(self, virtual_object_hashcode):
+        self._map_3d.removeItem(self._mesh[virtual_object_hashcode])
