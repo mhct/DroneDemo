@@ -80,20 +80,7 @@ class View(QtGui.QWidget):
         grid.setSpacing(10)
         return grid
 
-    def get_checked_boxes(self):
-        """
-        :return: a list of checked boxes
-        :rtype: list of checked boxes
-        """
-        checked_boxes = []
-
-        for checkbox in self._check_boxes:
-            if checkbox.isChecked():
-                checked_boxes.append(checkbox)
-
-        return checked_boxes
-
-    def _write_to_screen(self, message):
+    def _write_to_console(self, message):
         self._console.addItem(unicode(message))
 
     def draw_objects_and_drone(self, mesh):
@@ -101,7 +88,7 @@ class View(QtGui.QWidget):
         self._update_stored_mesh(mesh)
         self._add_new_virtual_object_mesh()
         self._add_new_drone_mesh()
-        self._write_to_screen("updated map")
+        self._write_to_console("updated map")
 
     def draw_new_drone_pose(self, drone_mesh):
         # remove previous drone_mesh
@@ -125,7 +112,7 @@ class View(QtGui.QWidget):
                                                -self._map_width.y * self._resolution.y / 2, 0, True)
             self._map_3d.addItem(self._elevation_map_mesh)
 
-    def update_added_object_list(self, object_hashcodes):
+    def update_added_object_list(self, virtual_objects):
         self._object_list_console.clear()
-        for hashcode in object_hashcodes:
-            self._object_list_console.addItem(unicode(self._controller.get_object_by_hashcode(hashcode).get_name()))
+        for obj in virtual_objects:
+            self._object_list_console.addItem(unicode(obj.get_name()))

@@ -27,8 +27,8 @@ class VirtualEnvironment:
         # the grid map
         self._grid_map = [[CellData() for i in range(self._map_width.x)] for i in range(self._map_width.y)]
 
-        # the dictionary where key are object hash code, values are the object instance
-        self._object_dict = {}
+        # set of existing virtual object
+        self._virtual_object_set = set()
 
     def add_virtual_object(self, virtual_object):
         """
@@ -38,19 +38,15 @@ class VirtualEnvironment:
         :return the hashcode of the object on the server
         :rtype hashcode
         """
-        virtual_object_hash = hash(virtual_object)
-
-        if virtual_object_hash in self._object_dict.keys():
+        if virtual_object in self._virtual_object_set:
             raise ValueError("The object is already added to the grid map")
 
-        self._object_dict[virtual_object_hash] = virtual_object
+        self._virtual_object_set.add(virtual_object)
 
         for cell in virtual_object.get_cells():
             x = cell.x
             y = cell.y
             self._grid_map[x][y].add_virtual_object(virtual_object, cell.height)
-
-        return virtual_object_hash
 
     def is_occupied(self, point):
         """
@@ -68,23 +64,22 @@ class VirtualEnvironment:
 
         return self._grid_map[x][y].is_occupied(point.z)
 
-    def remove_virtual_object_by_hashcode(self, hashcode):
-        virtual_object = self._object_dict.pop(hashcode)
-
-        for cell in virtual_object.get_cells():
-            x = cell.x
-            y = cell.y
-            self._grid_map[x][y].remove_virtual_object(virtual_object)
-
     def remove_virtual_object(self, virtual_object):
         """
         Remove an object from map
         :param virtual_object: the the object to be removed
         :type virtual_object: VirtualObject
         """
-        self.remove_virtual_object_by_hashcode(hash(virtual_object))
+        self._virtual_object_set.remove(virtual_object)
+
+        for cell in virtual_object.get_cells():
+            x = cell.x
+            y = cell.y
+            self._grid_map[x][y].remove_virtual_object(virtual_object)
 
     def clear_map(self):
+        self._virtual_object_set.clear()
+
         for x in range(self._map_width.x):
             for y in range(self._map_width.y):
                 self._grid_map[x][y].clear_cell()
@@ -99,9 +94,5 @@ class VirtualEnvironment:
     def get_map_params(self):
         return MapParams(self._map_width, self._res)
 
-    def get_all_object_hashcodes(self):
-        """
-        :return: the list of hashcodes of all objects currently in the environment
-        :rtype: list of int
-        """
-        return self._object_dict.keys()
+    def get_existing_virtual_objects(self):
+        return self._virtual_object_set

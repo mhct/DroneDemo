@@ -9,5 +9,5 @@ class DroneObserver:
         pass
 
     @abstractmethod
-    def update_virtual_environment(self, elevation_map, object_hashcodes):
+    def update_virtual_environment(self, elevation_map, existing_objects):
         pass
