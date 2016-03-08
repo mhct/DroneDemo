@@ -24,7 +24,8 @@ class View(QtGui.QWidget):
         # initialize gui components
         self._init_components()
         # store the previous mesh locally
-        self._mesh = None
+        self._drone_mesh = None
+        self._elevation_map_mesh = None
 
     def _init_components(self):
         """
@@ -102,28 +103,27 @@ class View(QtGui.QWidget):
         self._add_new_drone_mesh()
         self._write_to_screen("updated map")
 
-    def _update_stored_mesh(self, mesh):
-        self._mesh = mesh
+    def draw_new_drone_pose(self, drone_mesh):
+        # remove previous drone_mesh
+        if self._drone_mesh is not None:
+            self._map_3d.removeItem(self._drone_mesh)
 
-    def _add_new_drone_mesh(self):
-        if self._mesh.drone is not None:
-            self._mesh.drone.translate(-self._map_width.x * self._resolution.x / 2,
+        self._drone_mesh = drone_mesh
+
+        if self._drone_mesh is not None:
+            self._drone_mesh.translate(-self._map_width.x * self._resolution.x / 2,
                                        -self._map_width.y * self._resolution.y / 2, 0, True)
-            self._map_3d.addItem(self._mesh.drone)
+            self._map_3d.addItem(self._drone_mesh)
 
-    def _add_new_virtual_object_mesh(self):
-        if self._mesh.virtual_objects is not None:
-            self._mesh.virtual_objects.translate(-self._map_width.x * self._resolution.x / 2,
-                                                 -self._map_width.y * self._resolution.y / 2, 0, True)
-            self._map_3d.addItem(self._mesh.virtual_objects)
+    def draw_new_elevation_map(self, elevation_map_mesh):
+        if self._elevation_map_mesh is not None:
+            self._map_3d.removeItem(self._elevation_map_mesh)
 
-    def _remove_previous_mesh(self):
-        if self._mesh is not None:
-            if self._mesh.virtual_objects is not None:
-                self._map_3d.removeItem(self._mesh.virtual_objects)
-
-            if self._mesh.drone is not None:
-                self._map_3d.removeItem(self._mesh.drone)
+        self._elevation_map_mesh = elevation_map_mesh
+        if self._elevation_map_mesh is not None:
+            self._elevation_map_mesh.translate(-self._map_width.x * self._resolution.x / 2,
+                                               -self._map_width.y * self._resolution.y / 2, 0, True)
+            self._map_3d.addItem(self._elevation_map_mesh)
 
     def update_added_object_list(self, object_hashcodes):
         self._object_list_console.clear()

@@ -1,15 +1,15 @@
 import unittest
 
 from VirtualObject import VirtualObject
-from Environment import Environment
+from VirtualEnvironment import VirtualEnvironment
 from Helper import Point, MapWidth, Resolution
 from MD5Generator import md5
 
 
-class EnvironmentTest(unittest.TestCase):
+class VirtualEnvironmentTest(unittest.TestCase):
 
     def setUp(self):
-        self.env = Environment(MapWidth(4, 4), Resolution(100, 100))  # size_x size_y res_x res_y
+        self.env = VirtualEnvironment(MapWidth(4, 4), Resolution(100, 100))  # size_x size_y res_x res_y
         self._virtual_object1 = VirtualObject("virtualobjects/test_object1.txt")
         self._virtual_object2 = VirtualObject("virtualobjects/test_object2.txt")
 

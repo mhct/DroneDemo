@@ -28,7 +28,7 @@ class Popup(QtGui.QWidget):
         existing_object_hashcodes = self._controller.get_existing_object_hashcodes()
         self._init_3d_preview(grid)
         self._init_checkboxes(existing_object_hashcodes, grid)
-        self._add_drone(self._controller.get_drone_state())
+        self._add_drone(self._controller.get_drone_pose())
         self._init_buttons(grid)
 
         self.setLayout(grid)

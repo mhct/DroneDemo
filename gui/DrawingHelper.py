@@ -31,7 +31,7 @@ class DrawingHelper:
 
     @staticmethod
     def construct_drone(drone_position, res):
-        # TODO add direction
+        # TODO add direction, check the scope if this method
 
         p0 = [drone_position.x + res.x / 2, drone_position.y + res.y / 2, drone_position.z]
         p1 = [drone_position.x - res.x / 2, drone_position.y + res.y / 2, drone_position.z]

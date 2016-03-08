@@ -3,7 +3,7 @@ from VirtualObject import VirtualObject
 from Helper import Point, Resolution, MapWidth, MapParams, Cell
 
 
-class Environment:
+class VirtualEnvironment:
     """
     Model of the environment.
     """
