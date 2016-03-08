@@ -50,8 +50,3 @@ class Controller:
 
     def add_object_to_warehouse(self, virtual_object):
         self._warehouse.add_object(virtual_object)
-
-if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    controller = Controller()
-    sys.exit(app.exec_())
