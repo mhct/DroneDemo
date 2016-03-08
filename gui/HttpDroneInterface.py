@@ -24,9 +24,9 @@ class HttpDroneInterface(DroneObserver, QObject):
         super(HttpDroneInterface, self).__init__()
         self._env = VirtualEnvironment(MapWidth(50, 50), Resolution(100, 100))
         self._server = None
-        self.subcribe_server()
+        self.subscribe_server()
 
-    def subcribe_server(self):
+    def subscribe_server(self):
         self._server = MockServer()
         self._server.start()
         self._server.register(self)

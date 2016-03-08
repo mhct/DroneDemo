@@ -8,7 +8,8 @@ class VirtualObjectWarehouse:
     """
 
     def __init__(self, directory, prefix):
-        self._virtual_objects = set()
+        self._all_objects = set()
+        self._added_objects = set()
         self._scan_objects(directory, prefix)
 
     def _scan_objects(self, directory, prefix):
@@ -26,11 +27,18 @@ class VirtualObjectWarehouse:
 
         for file_name in file_list:
             virtual_object = VirtualObject(directory + "/" + file_name)
-            self._virtual_objects.add(virtual_object)
+            self._all_objects.add(virtual_object)
 
     def get_all_objects(self):
-        return self._virtual_objects
+        return self._all_objects
+
+    def get_added_objects(self):
+        return self._added_objects
 
     def add_object(self, virtual_object):
-        self._virtual_objects.add(virtual_object)
+        self._all_objects.add(virtual_object)
+
+    def update_added_objects(self, added_objects):
+        self._added_objects = set(added_objects)
+        self._all_objects = self._all_objects.union(added_objects)
 
