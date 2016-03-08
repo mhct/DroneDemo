@@ -26,7 +26,7 @@ class Controller(QObject):
         self._drone_interface.virtual_env_update_signal.connect(self._update_virtual_env)
 
         # map setter, to update the map using the input from users
-        self._map_setter = MapSetter(self._drone_interface, self._warehouse)
+        self._map_setter = MapSetter(self._drone_interface)
 
     def get_map_params(self):
         return self._drone_interface.get_map_params()
@@ -41,7 +41,7 @@ class Controller(QObject):
         self.virtual_env_update_signal.emit()
 
     def set_map(self, virtual_objects):
-        self._map_setter.set_map(virtual_objects)
+        self._map_setter.set_map(virtual_objects, self._warehouse.get_added_objects())
 
     def get_added_objects(self):
         return self._warehouse.get_added_objects()
