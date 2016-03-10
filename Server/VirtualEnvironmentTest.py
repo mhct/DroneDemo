@@ -1,21 +1,30 @@
 import unittest
 
 from VirtualObject import VirtualObject
-from VirtualEnvironment import VirtualEnvironment
-from Helper import Point, MapWidth, Resolution
-from MD5Generator import md5
+from Server.VirtualEnvironment import VirtualEnvironment
+from Helper import Point, MapWidth, CellSize, MapParams
+from VirtualEnvViewer.MD5Generator import md5
 
 
 class VirtualEnvironmentTest(unittest.TestCase):
 
     def setUp(self):
-        self.env = VirtualEnvironment(MapWidth(4, 4), Resolution(100, 100))  # size_x size_y res_x res_y
-        self._virtual_object1 = VirtualObject("virtualobjects/test_object1.txt")
-        self._virtual_object2 = VirtualObject("virtualobjects/test_object2.txt")
+
+        self.env = VirtualEnvironment(MapParams(MapWidth(4, 4), CellSize(100, 100)))  # size_x size_y res_x res_y
+        # self._virtual_object1 = VirtualObject("resources_virtualobjects/test_object1.txt")
+        # self._virtual_object2 = VirtualObject("resources_virtualobjects/test_object2.txt")
+
+    def test_empty_virtual_environment(self):
+        assert self.env.get_elevation_map() == []
+
+    def test_add_object_simple(self):
+        vo = VirtualObject([[1,1,333]])
+        self.env.add_virtual_object(vo)
+
 
     def test_correct_input_test_files(self):
-        self.assertEqual(md5("virtualobjects/test_object1.txt"), "914487f5ff43a13a5929dc31afb9b541")
-        self.assertEqual(md5("virtualobjects/test_object2.txt"), "f2b109928cc97dc43ed9b633e8d20883")
+        self.assertEqual(md5("resources_virtualobjects/test_object1.txt"), "914487f5ff43a13a5929dc31afb9b541")
+        self.assertEqual(md5("resources_virtualobjects/test_object2.txt"), "f2b109928cc97dc43ed9b633e8d20883")
 
     def test_add_object(self):
         self.env.add_virtual_object(self._virtual_object1)

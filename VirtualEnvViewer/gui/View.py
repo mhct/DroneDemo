@@ -1,7 +1,7 @@
-import pyqtgraph.opengl as gl
 from PyQt4 import QtGui
 
-from Controller import Controller
+import pyqtgraph.opengl as gl
+from VirtualEnvViewer.gui import Controller
 from DrawingHelper import DrawingHelper
 from gui.Popup import Popup
 

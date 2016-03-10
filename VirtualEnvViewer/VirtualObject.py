@@ -1,6 +1,4 @@
-from collections import namedtuple
-
-from Helper import Cell
+from VirtualEnvViewer.Helper import Cell
 
 
 class VirtualObject:

@@ -1,9 +1,10 @@
-from PyQt4.QtCore import QThread
-
-from Helper import MapWidth, Resolution, Point
-from VirtualEnvironment import VirtualEnvironment
 from PyQt4 import QtCore
 from random import randint
+
+from PyQt4.QtCore import QThread
+
+from VirtualEnvViewer.Helper import MapWidth, Resolution, Point
+from Server import VirtualEnvironment
 
 
 class MockServer(QtCore.QThread):
@@ -40,7 +41,7 @@ class MockServer(QtCore.QThread):
         return self._env.get_elevation_map()
 
     def get_existing_virtual_objects(self):
-        return self._env.get_existing_virtual_objects()
+        return self._env.get_virtual_objects()
 
     def update_virtual_environment(self, to_be_added_objects, to_be_removed_objects):
         for virtual_object in to_be_added_objects:

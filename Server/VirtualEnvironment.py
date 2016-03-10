@@ -1,6 +1,6 @@
-from CellData import CellData
+from Server.CellData import CellData
 from VirtualObject import VirtualObject
-from Helper import Point, Resolution, MapWidth, MapParams, Cell
+from Helper import Point, MapParams, Cell
 
 
 class VirtualEnvironment:
@@ -8,21 +8,18 @@ class VirtualEnvironment:
     Model of the environment.
     """
 
-    def __init__(self, map_width, resolution):
+    def __init__(self, map_params):
         """
         Initialize an empty map and an empty list of objects.
-        :param map_width: the width of the map in x and y (or the number of cells in each row and each column)
-        :type map_width: __namedtuple MapWidth
-        :param resolution: the resolution of each cell in x and y
-        :type resolution: __namedtuple Resolution
-        :return:
-        :rtype:
+        :param map_params: Map parameters (Width and Resolution) the width of the map in x and y (or the number of cells in each row and each column)
+        map_width: __namedtuple MapWidth
+        cell_size: the size in millimeters of each cell in x and y
         """
         # store cell resolution
-        self._res = resolution
+        self._res = map_params.resolution
 
         # store the map width
-        self._map_width = map_width
+        self._map_width = map_params.map_width
 
         # the grid map
         self._grid_map = [[CellData() for i in range(self._map_width.x)] for i in range(self._map_width.y)]
@@ -70,12 +67,17 @@ class VirtualEnvironment:
         :param virtual_object: the the object to be removed
         :type virtual_object: VirtualObject
         """
-        self._virtual_object_set.remove(virtual_object)
+        if virtual_object in self._virtual_object_set:
+            self._virtual_object_set.remove(virtual_object)
 
-        for cell in virtual_object.get_cells():
-            x = cell.x
-            y = cell.y
-            self._grid_map[x][y].remove_virtual_object(virtual_object)
+            for cell in virtual_object.get_cells():
+                x = cell.x
+                y = cell.y
+                self._grid_map[x][y].remove_virtual_object(virtual_object)
+
+            return True
+        else:
+            return False
 
     def clear_map(self):
         self._virtual_object_set.clear()
@@ -84,7 +86,7 @@ class VirtualEnvironment:
             for y in range(self._map_width.y):
                 self._grid_map[x][y].clear_cell()
 
-    def get_elevation_map(self):
+    def _get_elevation_map(self):
         cells = []
         for x in range(self._map_width.x):
             for y in range(self._map_width.y):
@@ -94,5 +96,10 @@ class VirtualEnvironment:
     def get_map_params(self):
         return MapParams(self._map_width, self._res)
 
-    def get_existing_virtual_objects(self):
-        return self._virtual_object_set
+    def get_virtual_objects(self):
+        ret = []
+
+        for vo in self._virtual_object_set:
+            ret.append(vo.get_cells())
+
+        return ret

@@ -1,14 +1,14 @@
 import unittest
 
 from VirtualObject import VirtualObject
-from VirtualObjectWarehouse import VirtualObjectWarehouse
+from VirtualEnvViewer.gui import VirtualObjectWarehouse
 
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
-        self._warehouse = VirtualObjectWarehouse("../virtualobjects", "test_object")
-        self._object1 = VirtualObject("../virtualobjects/test_object1.txt")
-        self._object2 = VirtualObject("../virtualobjects/test_object2.txt")
+        self._warehouse = VirtualObjectWarehouse("../resources_virtualobjects", "test_object")
+        self._object1 = VirtualObject("../resources_virtualobjects/test_object1.txt")
+        self._object2 = VirtualObject("../resources_virtualobjects/test_object2.txt")
 
     def test_get_object_by_file_name(self):
         self.assertEqual(self._warehouse.get_virtual_object_by_filename("test_object1.txt"), self._object1)

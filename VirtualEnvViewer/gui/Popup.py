@@ -1,12 +1,10 @@
-import os
 from functools import partial
+from PyQt4 import QtGui
 
 import numpy as np
-from PyQt4 import QtGui
-import pyqtgraph.opengl as gl
 
-from VirtualObject import VirtualObject
-from gui.DrawingHelper import DrawingHelper
+import pyqtgraph.opengl as gl
+from VirtualEnvViewer.gui import DrawingHelper
 
 
 class Popup(QtGui.QWidget):

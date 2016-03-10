@@ -1,12 +1,11 @@
-from VirtualObject import VirtualObject
-from HttpDroneInterface import HttpDroneInterface
+from VirtualEnvViewer.gui import VirtualEnvironmentService
 
 
 class MapSetter:
     def __init__(self, drone_interface):
         """
         :param drone_interface: the drone interface
-        :type drone_interface: HttpDroneInterface
+        :type drone_interface: VirtualEnvironmentService
         """
         self._drone_interface = drone_interface
 

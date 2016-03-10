@@ -1,19 +1,19 @@
 import unittest
 
-from CellData import CellData
-from MD5Generator import md5
+from Server import CellData
+from VirtualEnvViewer.MD5Generator import md5
 from VirtualObject import VirtualObject
 
 
 class MyTestCase(unittest.TestCase):
     def setUp(self):
         self._cell_data = CellData()
-        self._object1 = VirtualObject("virtualobjects/test_object1.txt")
-        self._object2 = VirtualObject("virtualobjects/test_object2.txt")
+        self._object1 = VirtualObject("resources_virtualobjects/test_object1.txt")
+        self._object2 = VirtualObject("resources_virtualobjects/test_object2.txt")
 
     def test_correct_input_files(self):
-        self.assertEqual(md5("virtualobjects/test_object1.txt"), "914487f5ff43a13a5929dc31afb9b541")
-        self.assertEqual(md5("virtualobjects/test_object2.txt"), "f2b109928cc97dc43ed9b633e8d20883")
+        self.assertEqual(md5("resources_virtualobjects/test_object1.txt"), "914487f5ff43a13a5929dc31afb9b541")
+        self.assertEqual(md5("resources_virtualobjects/test_object2.txt"), "f2b109928cc97dc43ed9b633e8d20883")
 
     def test_add_object(self):
         # initially, no object exists

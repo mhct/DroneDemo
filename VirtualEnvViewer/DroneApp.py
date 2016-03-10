@@ -1,8 +1,8 @@
 import sys
 from PyQt4 import QtGui
 
-from gui.Controller import Controller
-from gui.HttpDroneInterface import HttpDroneInterface
+from VirtualEnvViewer.gui import Controller
+from gui.VirtualEnvironmentService import VirtualEnvironmentService
 from gui.View import View
 from gui.VirtualObjectWarehouse import VirtualObjectWarehouse
 
@@ -12,9 +12,9 @@ class DroneApp:
         app = QtGui.QApplication(sys.argv)
 
         # initialize the client
-        drone_interface = HttpDroneInterface()
+        drone_interface = VirtualEnvironmentService()
         # initialize the virtual object warehouse
-        warehouse = VirtualObjectWarehouse("../virtualobjects", "virtual_object")
+        warehouse = VirtualObjectWarehouse("../resources_virtualobjects", "virtual_object")
         controller = Controller(drone_interface, warehouse)
         self._view = View(controller)
 
