@@ -1,4 +1,4 @@
-from Server.CellData import CellData
+from CellData import CellData
 from VirtualObject import VirtualObject
 from Helper import Point, MapParams, Cell
 
@@ -100,6 +100,6 @@ class VirtualEnvironment:
         ret = []
 
         for vo in self._virtual_object_set:
-            ret.append(vo.get_cells())
+            ret.append({'cells': vo.get_cells()})
 
         return ret

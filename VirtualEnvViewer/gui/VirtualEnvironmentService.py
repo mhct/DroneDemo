@@ -26,7 +26,11 @@ class VirtualEnvironmentService(QObject):
     def get_elevation_map(self):
         r = requests.get(self.virtual_env_url + "/virtualEnvironment")
 
-        return r.json()
+        data = json.loads(r.text)
+        env_configuration = data['environment_configuration']
+        virtual_objects = data['virtual_objects']
+
+        return (env_configuration, virtual_objects)
 
     def add_virtual_object(self, virtual_object):
         data = {'cells': virtual_object.get_cells()}

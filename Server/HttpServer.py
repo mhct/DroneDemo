@@ -1,10 +1,11 @@
-from Server.VirtualEnvironment import VirtualEnvironment
-from Server.Helper import MapWidth, CellSize, MapParams
 import flask
 from flask import jsonify, request, Response
-import json
-from Server.VirtualObject import VirtualObject
-import jsonpickle
+
+from VirtualEnvironment import VirtualEnvironment
+from Helper import MapWidth, CellSize, MapParams
+from VirtualObject import VirtualObject
+
+
 
 
 __author__ = 'mario'
