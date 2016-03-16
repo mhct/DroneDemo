@@ -13,13 +13,14 @@ class DrawingHelper:
         return drone_mesh
 
     @staticmethod
-    def create_elevation_map_mesh(elevation_map, resolution):
+    def create_elevation_map_mesh(virtual_objects, resolution):
         surfaces = []
-        for cell in elevation_map:
-            if cell.height > 0:
-                cube = DrawingHelper.construct_cube(cell.x * resolution.x, cell.y * resolution.y, resolution,
-                                                    cell.height)
-                surfaces += cube
+        for single_object in virtual_objects:
+            for cell in single_object.get_cells():
+                if cell.height > 0:
+                    cube = DrawingHelper.construct_cube(cell.x * resolution.x, cell.y * resolution.y, resolution,
+                                                        cell.height)
+                    surfaces += cube
 
         if len(surfaces) == 0:
             object_mesh = None

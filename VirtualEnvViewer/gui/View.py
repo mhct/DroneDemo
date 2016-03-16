@@ -3,7 +3,7 @@ from PyQt4 import QtGui
 import pyqtgraph.opengl as gl
 from VirtualEnvViewer.gui import Controller
 from DrawingHelper import DrawingHelper
-from gui.Popup import Popup
+from Popup import Popup
 
 
 class View(QtGui.QWidget):
@@ -126,11 +126,17 @@ class View(QtGui.QWidget):
             self._map_3d.addItem(self._elevation_map_mesh)
 
     def _update_drone_pose(self):
-        drone_mesh = DrawingHelper.create_drone_mesh(self._controller.get_drone_pose(), self._map_params.resolution)
+        drone_pose = self._controller.get_drone_pose()
+
+        if drone_pose is None:
+            return
+
+        drone_mesh = DrawingHelper.create_drone_mesh(drone_pose, self._map_params.resolution)
         self._draw_new_drone_pose(drone_mesh)
 
     def _update_virtual_environment(self):
-        elevation_map_mesh = DrawingHelper.create_elevation_map_mesh(self._controller.get_elevation_map(),
+        virtual_enviroment_objects = self._controller.get_added_objects()
+        elevation_map_mesh = DrawingHelper.create_elevation_map_mesh(virtual_enviroment_objects,
                                                                      self._map_params.resolution)
         self._draw_new_elevation_map(elevation_map_mesh)
-        self._update_added_object_list(self._controller.get_added_objects())
+        self._update_added_object_list(virtual_enviroment_objects)

@@ -1,11 +1,13 @@
 import sys
+
 from PyQt4 import QtGui
 
-from VirtualEnvViewer.gui import Controller
-from gui.VirtualEnvironmentService import VirtualEnvironmentService
-from gui.View import View
-from gui.VirtualObjectWarehouse import VirtualObjectWarehouse, LocalLoaderVirtualObjects
 import gui.HttpServer
+from VirtualEnvViewer.gui import Controller
+from gui.View import View
+from gui.VirtualEnvironmentService import VirtualEnvironmentService
+from gui.VirtualObjectWarehouse import VirtualObjectWarehouse, LocalLoaderVirtualObjects
+
 
 class DroneApp:
     def __init__(self):

@@ -2,19 +2,18 @@ from VirtualObject import VirtualObject
 from VirtualEnvironment import VirtualEnvironment
 from Helper import Point, MapWidth, CellSize, MapParams
 
-class TestVirtualEnvironment:
 
+class TestVirtualEnvironment:
     def setup_method(self, method):
         self.env = VirtualEnvironment(MapParams(MapWidth(4, 4), CellSize(100, 100)))  # size_x size_y res_x res_y
-        self._virtual_object1 = VirtualObject([[1, 1, 1000],[1, 2, 1000],[1, 3, 1000]])
-        self._virtual_object2 = VirtualObject([[1, 0, 2000],[1, 2, 500],[1, 3, 2000]])
+        self._virtual_object1 = VirtualObject([[1, 1, 1000], [1, 2, 1000], [1, 3, 1000]])
+        self._virtual_object2 = VirtualObject([[1, 0, 2000], [1, 2, 500], [1, 3, 2000]])
 
     def test_add_object_simple(self):
         vo = VirtualObject([[1, 1, 333]])
         self.env.add_virtual_object(vo)
 
         assert len(self.env.get_virtual_objects()) == 1
-
 
     def test_add_object(self):
         vo = VirtualObject([[0, 0, 100]])

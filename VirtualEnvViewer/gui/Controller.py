@@ -1,8 +1,8 @@
 from PyQt4 import QtCore
-
 from PyQt4.QtCore import QObject
 
 from VirtualEnvViewer.gui import MapSetter
+from VirtualEnvViewer.gui.VirtualEnvironmentGetter import VirtualEnvironmentGetter
 
 
 class Controller(QObject):
@@ -13,31 +13,40 @@ class Controller(QObject):
     def __init__(self, drone_connector, virtual_environment_service, warehouse):
         # initialize the client
         QObject.__init__(self)
-        self._drone_interface = virtual_environment_service
+        self._virtual_environment_service = virtual_environment_service
 
         # initialize the virtual object warehouse
         self._warehouse = warehouse
-        self._warehouse.update_added_objects(self._drone_interface.get_existing_objects())
 
-        self._drone_pose = drone_connector
-        self._elevation_map = virtual_environment_service.get_elevation_map()
+        # during the initialization, update the env_configuration and virtual_objects once
+        (env_configuration, virtual_objects) = self._virtual_environment_service.get_elevation_map()
+        self._warehouse.replace_virtual_environment_objects(virtual_objects)
+
+        self._env_configuration = env_configuration
+
+        self._drone_pose = None
+        self._drone_connector = drone_connector
 
         # subscribe signal received from server
-        self._drone_pose.drone_pose_update_signal.connect(self._update_drone_pose)
-        self._drone_interface.virtual_env_update_signal.connect(self._update_virtual_env)
+        self._drone_connector.drone_pose_update_signal.connect(self._update_drone_pose)
 
         # map setter, to update the map using the input from users
-        self._map_setter = MapSetter(self._drone_interface)
+        self._map_setter = MapSetter(self._virtual_environment_service)
+
+        # thread to update virtual environment after each second
+        self._virtual_environment_getter = VirtualEnvironmentGetter(self._virtual_environment_service)
+        self._virtual_environment_getter.map_signal.connect()
+        self._virtual_environment_getter.start(self._update_virtual_env)
 
     def get_map_params(self):
-        return self._drone_interface.get_map_params()
+        return self._env_configuration
 
     def _update_drone_pose(self, drone_pose):
         self._drone_pose = drone_pose
         self.drone_pose_update_signal.emit()
 
-    def _update_virtual_env(self, elevation_map, virtual_objects):
-        self._elevation_map = elevation_map
+    def _update_virtual_env(self, env_configuration, virtual_objects):
+        self._env_configuration = env_configuration
         self._warehouse.replace_virtual_environment_objects(virtual_objects)
         self.virtual_env_update_signal.emit()
 

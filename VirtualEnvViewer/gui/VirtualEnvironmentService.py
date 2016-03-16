@@ -1,12 +1,10 @@
-from abc import ABCMeta
-from PyQt4 import QtCore
-
-from PyQt4.QtCore import QObject, QThread
-from PyQt4.QtCore import pyqtWrapperType
-import requests
 import json
-import flask
-from flask import jsonify, request, Response
+from abc import ABCMeta
+
+import requests
+from PyQt4.QtCore import QObject
+from PyQt4.QtCore import pyqtWrapperType
+
 
 class FinalMeta(ABCMeta, pyqtWrapperType):
     pass

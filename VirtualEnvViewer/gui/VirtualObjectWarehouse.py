@@ -12,19 +12,15 @@ class VirtualObjectWarehouse:
         self._outside_virtual_environment_objects = set()
         self._virtual_environment_objects = set()
 
-
     def get_all_objects(self):
         return self._all_objects
-
 
     def get_virtual_environment_objects(self):
         return self._virtual_environment_objects
 
-
     def add_outside_virtual_environment_objects(self, virtual_object):
         self._outside_virtual_environment_objects.add(virtual_object)
         self._update_all_objects()
-
 
     def replace_virtual_environment_objects(self, virtual_objects):
         if not isinstance(virtual_objects, set):
@@ -38,9 +34,7 @@ class VirtualObjectWarehouse:
         self._all_objects = self._all_objects.union(self._virtual_environment_objects)
 
 
-
 class LocalLoaderVirtualObjects:
-
     def load_virtual_objects(directory, prefix):
         """
         Scan all input files whose names starting with the given prefix, create virtual object from those files and
