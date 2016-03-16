@@ -58,7 +58,7 @@ class Popup(QtGui.QWidget):
         for virtual_object in objects_in_warehouse:
             self._create_checkbox(layout, virtual_object)
         
-        added_objects = self._controller.get_added_objects()
+        added_objects = self._controller.get_virtual_environment_objects()
         for virtual_object in added_objects:
             self._check_boxes[virtual_object].toggle()
 

@@ -4,15 +4,44 @@ from VirtualObject import VirtualObject
 
 class VirtualObjectWarehouse:
     """
-    The warehouse storing all virtual object
+    The warehouse storing virtual objects
     """
 
-    def __init__(self, directory, prefix):
+    def __init__(self):
         self._all_objects = set()
-        self._added_objects = set()
-        self._scan_objects(directory, prefix)
+        self._outside_virtual_environment_objects = set()
+        self._virtual_environment_objects = set()
 
-    def _scan_objects(self, directory, prefix):
+
+    def get_all_objects(self):
+        return self._all_objects
+
+
+    def get_virtual_environment_objects(self):
+        return self._virtual_environment_objects
+
+
+    def add_outside_virtual_environment_objects(self, virtual_object):
+        self._outside_virtual_environment_objects.add(virtual_object)
+        self._update_all_objects()
+
+
+    def replace_virtual_environment_objects(self, virtual_objects):
+        if not isinstance(virtual_objects, set):
+            raise ValueError("Should be a list of Virtual Objects")
+
+        self._virtual_environment_objects = set(virtual_objects)
+        self._update_all_objects()
+
+    def _update_all_objects(self):
+        self._all_objects = self._all_objects.union(self._outside_virtual_environment_objects)
+        self._all_objects = self._all_objects.union(self._virtual_environment_objects)
+
+
+
+class LocalLoaderVirtualObjects:
+
+    def load_virtual_objects(directory, prefix):
         """
         Scan all input files whose names starting with the given prefix, create virtual object from those files and
         store them in a set.
@@ -20,25 +49,13 @@ class VirtualObjectWarehouse:
         :type directory: str
         :param prefix: the prefix
         :type prefix: str
-        :return: a dictionary where keys are file names and values are the created virtual objects
-        :rtype: dict
+        :return: a set of virtual objects
         """
         file_list = [f for f in os.walk(directory).next()[2] if f.startswith(prefix)]
 
+        virtual_objects = set()
         for file_name in file_list:
             virtual_object = VirtualObject(directory + "/" + file_name)
-            self._all_objects.add(virtual_object)
+            virtual_objects.add(virtual_object)
 
-    def get_all_objects(self):
-        return self._all_objects
-
-    def get_added_objects(self):
-        return self._added_objects
-
-    def add_object(self, virtual_object):
-        self._all_objects.add(virtual_object)
-
-    def update_added_objects(self, added_objects):
-        self._added_objects = set(added_objects)
-        self._all_objects = self._all_objects.union(added_objects)
-
+        return virtual_objects

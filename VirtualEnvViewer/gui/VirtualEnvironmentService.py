@@ -1,10 +1,12 @@
 from abc import ABCMeta
 from PyQt4 import QtCore
 
-from PyQt4.QtCore import QObject
+from PyQt4.QtCore import QObject, QThread
 from PyQt4.QtCore import pyqtWrapperType
 import requests
 import json
+import flask
+from flask import jsonify, request, Response
 
 class FinalMeta(ABCMeta, pyqtWrapperType):
     pass
@@ -13,12 +15,10 @@ class FinalMeta(ABCMeta, pyqtWrapperType):
 class VirtualEnvironmentService(QObject):
     __metaclass__ = FinalMeta
 
-    drone_pose_update_signal = QtCore.pyqtSignal(object)
-    virtual_env_update_signal = QtCore.pyqtSignal(object, object)
+    # virtual_env_update_signal = QtCore.pyqtSignal(object, object)
 
     def __init__(self):
-        super(self)
-        # self._env = VirtualEnvironment(MapWidth(50, 50), Resolution(100, 100))
+        QObject.__init__(self)
 
     def __init__(self, virtual_env_url):
         self.virtual_env_url = virtual_env_url
@@ -42,9 +42,3 @@ class VirtualEnvironmentService(QObject):
         data = {'cells': virtual_object.get_cells()}
         r = requests.delete(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
         return True #FIXME
-
-    # def get_drone_pose(self):
-    #     return self._server.get_drone_pose()
-    #
-    # def update_drone_pose(self, drone_pose):
-    #     self.drone_pose_update_signal.emit(drone_pose)
