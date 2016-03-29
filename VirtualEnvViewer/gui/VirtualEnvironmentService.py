@@ -15,10 +15,8 @@ class VirtualEnvironmentService(QObject):
 
     # virtual_env_update_signal = QtCore.pyqtSignal(object, object)
 
-    def __init__(self):
-        QObject.__init__(self)
-
     def __init__(self, virtual_env_url):
+        QObject.__init__(self)
         self.virtual_env_url = virtual_env_url
 
     def get_elevation_map(self):

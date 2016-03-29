@@ -35,6 +35,7 @@ class VirtualObjectWarehouse:
 
 
 class LocalLoaderVirtualObjects:
+    @staticmethod
     def load_virtual_objects(directory, prefix):
         """
         Scan all input files whose names starting with the given prefix, create virtual object from those files and
