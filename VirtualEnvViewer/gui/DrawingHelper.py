@@ -14,21 +14,24 @@ class DrawingHelper:
 
     @staticmethod
     def create_elevation_map_mesh(virtual_objects, resolution):
-        surfaces = []
+        object_meshes = []
         for single_object in virtual_objects:
+            color = single_object.get_color()
+            surfaces = []
+
             for cell in single_object.get_cells():
                 if cell.height > 0:
                     cube = DrawingHelper.construct_cube(cell.x * resolution.x, cell.y * resolution.y, resolution,
-                                                        cell.height)
+                                                    cell.height)
                     surfaces += cube
 
-        if len(surfaces) == 0:
-            object_mesh = None
-        else:
-            object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=(0, 0, 1, 1), smooth=False, shader='shaded',
-                                        glOptions='opaque')
+            if len(surfaces) != 0:
+                object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=color, smooth=False,
+                                            shader='shaded',
+                                            glOptions='opaque')
+                object_meshes.append(object_mesh)
 
-        return object_mesh
+        return object_meshes
 
     @staticmethod
     def construct_drone(drone_position, res):

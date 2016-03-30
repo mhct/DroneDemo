@@ -5,6 +5,7 @@ import numpy as np
 
 import pyqtgraph.opengl as gl
 from VirtualEnvViewer.gui import DrawingHelper
+from CustomizedGLGridItem import CustomizedGLGridItem
 
 
 class Popup(QtGui.QWidget):
@@ -99,7 +100,7 @@ class Popup(QtGui.QWidget):
         self._map_3d = gl.GLViewWidget()
         self._map_3d.setCameraPosition(distance=80 * (res.x + res.y) / 2)
 
-        g = gl.GLGridItem()
+        g = CustomizedGLGridItem()
         g.scale(res.x, res.y, (res.x + res.y) / 2)
         g.setSize(width.x, width.y)
 
@@ -125,13 +126,14 @@ class Popup(QtGui.QWidget):
     def _create_mesh(self, virtual_object):
         res = self._map_params.resolution
         width = self._map_params.map_width
+        color = virtual_object.get_color()
 
         surfaces = []
         for cell in virtual_object.get_cells():
             surfaces += DrawingHelper.construct_cube(cell.x * res.x, cell.y * res.y,
                                                      res, cell.height)
 
-        object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=(0, 0, 1, 1), smooth=False, shader='shaded',
+        object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=color, smooth=False, shader='shaded',
                                     glOptions='opaque')
         object_mesh.translate(-width.x * res.x / 2, -width.y * res.y / 2,
                               0, True)

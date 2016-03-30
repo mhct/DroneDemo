@@ -1,3 +1,5 @@
+import random
+
 from VirtualEnvViewer.Helper import Cell
 
 
@@ -6,7 +8,7 @@ class VirtualObject:
     Immutable class to store virtual object information
     """
 
-    def __init__(self, file_path = None, cells = None):
+    def __init__(self, file_path=None, cells=None):
         self._name = ""
 
         if cells is None:
@@ -16,6 +18,7 @@ class VirtualObject:
             self._cells = cells
             self._name = "a"
 
+        self._color = (random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1))
 
     def get_cells(self):
         """
@@ -55,6 +58,9 @@ class VirtualObject:
         :rtype: str
         """
         return self._name
+
+    def get_color(self):
+        return self._color
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):
