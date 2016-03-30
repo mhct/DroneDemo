@@ -117,7 +117,8 @@ class View(QtGui.QWidget):
 
     def _draw_new_elevation_map(self, elevation_map_meshes):
         if self._elevation_map_meshes is not None:
-            self._map_3d.removeItem(self._elevation_map_meshes)
+            for mesh in self._elevation_map_meshes:
+                self._map_3d.removeItem(mesh)
 
         res = self._map_params.resolution
         width = self._map_params.map_width

@@ -13,7 +13,6 @@ class VirtualObject:
 
         if cells is None:
             self._read_file(file_path)
-            self._cells = frozenset()
         else:
             self._cells = cells
             self._name = "a"

@@ -46,14 +46,33 @@ class VirtualEnvironmentService(QObject):
         print virtual_objects
         return (map_params, set(virtual_objects))
 
-    def add_virtual_object(self, virtual_object):
-        data = {'cells': virtual_object.get_cells()}
+    def send_update_command(self, to_be_added_objects, to_be_removed_objects):
+        for obj in to_be_added_objects:
+            self._add_virtual_object(obj)
+
+        for obj in to_be_removed_objects:
+            self._delete_virtual_object(obj)
+
+
+    def _add_virtual_object(self, virtual_object):
+        # data = {"cells": list(virtual_object.get_cells())}
+        data = dict()
+        data["cells"] = list(virtual_object.get_cells())
+        print json.dumps(data)
+        bla = json.dumps(data)
+
         r = requests.post(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
 
         return True #FIXME
 
-    def delete_virtual_object(self, virtual_object):
-        data = {'cells': virtual_object.get_cells()}
+    def _delete_virtual_object(self, virtual_object):
+        # data = {"cells": list(virtual_object.get_cells())}
+
+        data = dict()
+        data["cells"] = list(virtual_object.get_cells())
+        print json.dumps(data)
+        bla = json.dumps(data)
+
         r = requests.delete(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
         return True #FIXME
 

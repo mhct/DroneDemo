@@ -4,7 +4,7 @@ from PyQt4 import QtGui
 import numpy as np
 
 import pyqtgraph.opengl as gl
-from VirtualEnvViewer.gui import DrawingHelper
+from VirtualEnvViewer.gui.DrawingHelper import DrawingHelper
 from CustomizedGLGridItem import CustomizedGLGridItem
 
 
@@ -59,7 +59,7 @@ class Popup(QtGui.QWidget):
         for virtual_object in objects_in_warehouse:
             self._create_checkbox(layout, virtual_object)
         
-        added_objects = self._controller.get_virtual_environment_objects()
+        added_objects = self._controller.get_added_objects()
         for virtual_object in added_objects:
             self._check_boxes[virtual_object].toggle()
 
@@ -99,6 +99,7 @@ class Popup(QtGui.QWidget):
 
         self._map_3d = gl.GLViewWidget()
         self._map_3d.setCameraPosition(distance=80 * (res.x + res.y) / 2)
+        self._map_3d.setBackgroundColor('w')
 
         g = CustomizedGLGridItem()
         g.scale(res.x, res.y, (res.x + res.y) / 2)
@@ -115,6 +116,9 @@ class Popup(QtGui.QWidget):
         self._map_3d.addItem(self._mesh[virtual_object])
 
     def _add_drone(self, drone_state):
+        if drone_state is None:
+            return
+
         res = self._map_params.resolution
         width = self._map_params.map_width
 

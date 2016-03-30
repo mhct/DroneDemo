@@ -1,5 +1,6 @@
 import flask
 from flask import jsonify, request, Response
+from jsonpickle import json
 
 from VirtualEnvironment import VirtualEnvironment
 from Helper import MapWidth, CellSize, MapParams
@@ -30,8 +31,9 @@ def get_virtual_environment():
 def add_object():
     data = request.get_json(force=True)
     if data:
-        virtual_object_data = data["cells"]
-        if data['cells']:
+        processed_data = json.loads(data)
+        virtual_object_data = processed_data["cells"]
+        if virtual_object_data:
             vo = VirtualObject(virtual_object_data)
             try:
                 _virtual_environment.add_virtual_object(vo)
@@ -47,8 +49,9 @@ def add_object():
 def delete_object():
     data = request.get_json(force=True)
     if data:
-        virtual_object_data = data["cells"]
-        if data['cells']:
+        processed_data = json.loads(data)
+        virtual_object_data = processed_data["cells"]
+        if virtual_object_data:
             vo = VirtualObject(virtual_object_data)
             if _virtual_environment.remove_virtual_object(vo):
                 return Response(status=200)
@@ -59,3 +62,6 @@ def delete_object():
 
     else:
         return Response(status=400)
+
+print "AAA"
+app.run(port=7000)
