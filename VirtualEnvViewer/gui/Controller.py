@@ -1,7 +1,7 @@
 from PyQt4 import QtCore
 from PyQt4.QtCore import QObject
 
-from VirtualEnvViewer.gui import MapSetter
+from VirtualEnvViewer.gui.MapSetter import MapSetter
 from VirtualEnvViewer.gui.VirtualEnvironmentGetter import VirtualEnvironmentGetter
 
 
@@ -35,8 +35,8 @@ class Controller(QObject):
 
         # thread to update virtual environment after each second
         self._virtual_environment_getter = VirtualEnvironmentGetter(self._virtual_environment_service)
-        self._virtual_environment_getter.map_signal.connect()
-        self._virtual_environment_getter.start(self._update_virtual_env)
+        self._virtual_environment_getter.map_signal.connect(self._update_virtual_env)
+        self._virtual_environment_getter.start()
 
     def get_map_params(self):
         return self._env_configuration

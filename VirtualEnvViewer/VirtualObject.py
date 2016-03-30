@@ -6,10 +6,16 @@ class VirtualObject:
     Immutable class to store virtual object information
     """
 
-    def __init__(self, file_path):
+    def __init__(self, file_path = None, cells = None):
         self._name = ""
-        self._cells = frozenset()
-        self._read_file(file_path)
+
+        if cells is None:
+            self._read_file(file_path)
+            self._cells = frozenset()
+        else:
+            self._cells = cells
+            self._name = "a"
+
 
     def get_cells(self):
         """

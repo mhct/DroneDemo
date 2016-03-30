@@ -4,6 +4,8 @@ from abc import ABCMeta
 import requests
 from PyQt4.QtCore import QObject
 from PyQt4.QtCore import pyqtWrapperType
+from VirtualEnvViewer.Helper import MapParams, Resolution, MapWidth, Cell
+from VirtualEnvViewer.VirtualObject import VirtualObject
 
 
 class FinalMeta(ABCMeta, pyqtWrapperType):
@@ -23,10 +25,26 @@ class VirtualEnvironmentService(QObject):
         r = requests.get(self.virtual_env_url + "/virtualEnvironment")
 
         data = json.loads(r.text)
-        env_configuration = data['environment_configuration']
-        virtual_objects = data['virtual_objects']
+        return self._parse_elevation_map_data(data)
 
-        return (env_configuration, virtual_objects)
+    def _parse_elevation_map_data(self, data):
+
+        env_configuration_raw = data['environment_configuration']
+        resolution_data = env_configuration_raw[0]
+        width_data = env_configuration_raw[1]
+
+        map_params = MapParams(Resolution(resolution_data[0], resolution_data[1]), MapWidth(width_data[0], width_data[1]))
+
+        virtual_objects_data = data['virtual_objects']
+        virtual_objects = []
+        for i in virtual_objects_data:
+            temp = set()
+            for cell in i['cells']:
+                temp.add(Cell(int(cell[0]), int(cell[1]), int(cell[2])))
+            virtual_objects.append(VirtualObject(cells=frozenset(temp)))
+
+        print virtual_objects
+        return (map_params, set(virtual_objects))
 
     def add_virtual_object(self, virtual_object):
         data = {'cells': virtual_object.get_cells()}
@@ -38,3 +56,4 @@ class VirtualEnvironmentService(QObject):
         data = {'cells': virtual_object.get_cells()}
         r = requests.delete(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
         return True #FIXME
+

@@ -1,6 +1,7 @@
 import sys
 
 from PyQt4 import QtGui
+from VirtualEnvViewer.gui.MockVirtualEnvironmentService import MockVirtualEnvironmentService
 
 import gui.HttpServer
 from VirtualEnvViewer.gui import Controller
@@ -22,6 +23,7 @@ class DroneApp:
 
         # initialize the client
         virtual_environment_service = VirtualEnvironmentService(self.server_url)
+        # virtual_environment_service = MockVirtualEnvironmentService(self.server_url)
         # initialize the virtual object warehouse
         local_virtual_objects = LocalLoaderVirtualObjects.load_virtual_objects("resources_virtualobjects", "virtual_object")
 
