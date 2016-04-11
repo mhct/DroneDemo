@@ -56,6 +56,18 @@ class TestHttpServer:
         response = client.post(self.URL + "/virtualEnvironment", data=virtual_object_json)
         assert response.status_code == 409
 
+    def test_delete_virtual_object_from_client_bad(self):
+        client = self.app.test_client()
+        data = dict()
+        data["cells"] = list([[12, 33, 333]])
+
+        json_data = json.dumps(data)
+
+        #raw_json = "{\"cells\": [[12, 33, 333], [12, 34, 333]]}"
+                     # {"cells":[[12,33,333],[12,34,333]]}
+        response = client.delete(self.URL + "/virtualEnvironment", data=json_data)
+        assert response.status_code == 200
+
 
     def test_delete_virtual_object_bad_request(self):
         client = self.app.test_client()
