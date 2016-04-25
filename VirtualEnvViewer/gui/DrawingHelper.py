@@ -9,8 +9,7 @@ class DrawingHelper:
     @staticmethod
     def create_drone_mesh(drone_position, resolution):
         drone_shape = DrawingHelper.construct_drone(drone_position, resolution)
-        drone_mesh = gl.GLMeshItem(vertexes=np.array(drone_shape), color=(1, 0, 0, 1), smooth=False, glOptions='opaque')
-        return drone_mesh
+        return drone_shape
 
     @staticmethod
     def create_elevation_map_mesh(virtual_objects, resolution):
@@ -37,14 +36,26 @@ class DrawingHelper:
     def construct_drone(drone_position, res):
         # TODO add direction, check the scope if this method
 
-        p0 = [drone_position.x + res.x / 2, drone_position.y + res.y / 2, drone_position.z]
-        p1 = [drone_position.x - res.x / 2, drone_position.y + res.y / 2, drone_position.z]
-        p2 = [drone_position.x - res.x / 2, drone_position.y - res.y / 2, drone_position.z]
-        p3 = [drone_position.x + res.x / 2, drone_position.y - res.y / 2, drone_position.z]
+        shapes = []
 
-        drone_shape = [[p0, p1, p2], [p0, p3, p2]]
+        p0 = [drone_position.x + res.x, drone_position.y + res.y, drone_position.z]
+        p1 = [drone_position.x - res.x, drone_position.y + res.y, drone_position.z]
+        p2 = [drone_position.x - res.x, drone_position.y - res.y, drone_position.z]
+        p3 = [drone_position.x + res.x, drone_position.y - res.y, drone_position.z]
 
-        return drone_shape
+        rectangle_array = [[p0, p1, p2], [p0, p3, p2]]
+        # color = (red, green, blue, alpha)
+        rectangle = gl.GLMeshItem(vertexes=np.array(rectangle_array), color=(0, 0, 1, 1), smooth=False,
+                                  glOptions='opaque')
+        shapes.append(rectangle)
+
+        for position in [p0, p1, p2, p3]:
+            md = gl.MeshData.sphere(rows=10, cols=20,radius=75)
+            sphere = gl.GLMeshItem(meshdata=md, color=(1, 0, 0, 1), smooth=False)  # , shader='balloon')
+            sphere.translate(position[0], position[1], position[2])
+            shapes.append(sphere)
+
+        return shapes
 
     @staticmethod
     def construct_cube(pos_x, pos_y, res, height):

@@ -114,7 +114,8 @@ class View(QtGui.QWidget):
     def _draw_new_drone_pose(self, drone_mesh):
         # remove previous drone_mesh
         if self._drone_mesh is not None:
-            self._map_3d.removeItem(self._drone_mesh)
+            for item in self._drone_mesh:
+                self._map_3d.removeItem(item)
 
         self._drone_mesh = drone_mesh
 
@@ -122,8 +123,9 @@ class View(QtGui.QWidget):
         width = self._map_params.map_width
 
         if self._drone_mesh is not None:
-            self._drone_mesh.translate(-width.x * res.x / 2, -width.y * res.y / 2, 0, True)
-            self._map_3d.addItem(self._drone_mesh)
+            for item in self._drone_mesh:
+                item.translate(-width.x * res.x / 2, -width.y * res.y / 2, 0, True)
+                self._map_3d.addItem(item)
 
     def _draw_new_elevation_map(self, elevation_map_meshes):
         if self._elevation_map_meshes is not None:
