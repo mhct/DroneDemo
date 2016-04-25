@@ -2,6 +2,7 @@ from PyQt4 import QtCore
 from PyQt4.QtCore import QThread, QObject
 import flask
 from flask import jsonify, request, Response
+from Helper import Point
 
 from Server.Helper import Point
 
