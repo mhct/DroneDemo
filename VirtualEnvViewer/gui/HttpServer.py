@@ -4,8 +4,6 @@ import flask
 from flask import jsonify, request, Response
 from Helper import Point
 
-from Server.Helper import Point
-
 _app = flask.Flask(__name__)
 
 class QConnector(QObject):
