@@ -1,8 +1,8 @@
 from PyQt4 import QtCore
 from PyQt4.QtCore import QObject
 
-from VirtualEnvViewer.gui.MapSetter import MapSetter
-from VirtualEnvViewer.gui.VirtualEnvironmentGetter import VirtualEnvironmentGetter
+from gui.MapSetter import MapSetter
+from gui.VirtualEnvironmentGetter import VirtualEnvironmentGetter
 
 
 class Controller(QObject):

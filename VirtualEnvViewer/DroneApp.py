@@ -1,10 +1,10 @@
 import sys
 
 from PyQt4 import QtGui
-from VirtualEnvViewer.gui.MockVirtualEnvironmentService import MockVirtualEnvironmentService
+# from gui.MockVirtualEnvironmentService import MockVirtualEnvironmentService
 
 import gui.HttpServer
-from VirtualEnvViewer.gui import Controller
+from gui import Controller
 from gui.View import View
 from gui.VirtualEnvironmentService import VirtualEnvironmentService
 from gui.VirtualObjectWarehouse import VirtualObjectWarehouse, LocalLoaderVirtualObjects

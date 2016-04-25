@@ -4,7 +4,7 @@ from PyQt4 import QtGui
 import numpy as np
 
 import pyqtgraph.opengl as gl
-from VirtualEnvViewer.gui.DrawingHelper import DrawingHelper
+from gui.DrawingHelper import DrawingHelper
 from CustomizedGLGridItem import CustomizedGLGridItem
 
 

@@ -1,4 +1,4 @@
-from VirtualEnvViewer.gui import VirtualEnvironmentService
+from gui import VirtualEnvironmentService
 
 
 class MapSetter:

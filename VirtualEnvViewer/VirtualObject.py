@@ -1,6 +1,6 @@
 import random
 
-from VirtualEnvViewer.Helper import Cell
+from Helper import Cell
 
 
 class VirtualObject:

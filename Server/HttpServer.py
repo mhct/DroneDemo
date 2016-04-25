@@ -5,6 +5,7 @@ from jsonpickle import json
 from VirtualEnvironment import VirtualEnvironment
 from Helper import MapWidth, CellSize, MapParams
 from VirtualObject import VirtualObject
+from __builtin__ import False
 
 
 
@@ -67,19 +68,20 @@ def delete_object():
 
 @app.route("/virtualEnvironment/reset", methods=['POST'])
 def reset_pose():
-    print "reset"
+    _set_reset_pose_true()
     if get_reset_pose():
         return Response(status=200)
     else:
         return Response(status=409)
 
 
-def set_reset_pose():
+def _set_reset_pose_true():
+    global need_reset_pose
     need_reset_pose = True
 
+def set_reset_pose_false():
+    global need_reset_pose
+    need_reset_pose = False
+    
 def get_reset_pose():
     return need_reset_pose
-
-
-print "AAA"
-app.run(port=7000)

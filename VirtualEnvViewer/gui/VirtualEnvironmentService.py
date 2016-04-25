@@ -4,8 +4,8 @@ from abc import ABCMeta
 import requests
 from PyQt4.QtCore import QObject
 from PyQt4.QtCore import pyqtWrapperType
-from VirtualEnvViewer.Helper import MapParams, Resolution, MapWidth, Cell
-from VirtualEnvViewer.VirtualObject import VirtualObject
+from Helper import MapParams, Resolution, MapWidth, Cell
+from VirtualObject import VirtualObject
 
 
 class FinalMeta(ABCMeta, pyqtWrapperType):
