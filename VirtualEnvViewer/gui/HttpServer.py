@@ -2,6 +2,7 @@ from PyQt4 import QtCore
 from PyQt4.QtCore import QThread, QObject
 import flask
 from flask import jsonify, request, Response
+from Helper import Point
 
 _app = flask.Flask(__name__)
 
@@ -28,7 +29,8 @@ def add_object():
     if data:
         # qconn.emit(data)
         if 'Point' == data['type'] and isinstance(data['coordinates'], list) and len(data['coordinates']) == 3:
-            qconn.emit(data['coordinates'])
+            coordinates = Point(data['coordinates'][0], data['coordinates'][1], data['coordinates'][2])
+            qconn.emit(coordinates)
             return Response(status=200)
         else:
             return Response(status=400)
