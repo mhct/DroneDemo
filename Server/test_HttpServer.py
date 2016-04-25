@@ -109,4 +109,13 @@ class TestHttpServer:
         assert vo1 in response_data['virtual_objects']
         assert vo2 in response_data['virtual_objects']
 
+    def test_reset_pose(self):
+        client = self.app.test_client()
+
+        response = client.post(self.URL + "/virtualEnvironment/reset")
+        assert response == 200
+
+        response = client.post(self.URL + "/virtualEnvironment/reset")
+        assert response == 409
+
 

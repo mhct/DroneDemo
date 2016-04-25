@@ -14,6 +14,8 @@ __author__ = 'mario'
 
 app = flask.Flask(__name__)
 _virtual_environment = VirtualEnvironment(MapParams(MapWidth(50,50), CellSize(100,100)))
+need_reset_pose = False
+
 
 @app.route("/")
 def root():
@@ -62,6 +64,22 @@ def delete_object():
 
     else:
         return Response(status=400)
+
+@app.route("/virtualEnvironment/reset", methods=['POST'])
+def reset_pose():
+    print "reset"
+    if get_reset_pose():
+        return Response(status=200)
+    else:
+        return Response(status=409)
+
+
+def set_reset_pose():
+    need_reset_pose = True
+
+def get_reset_pose():
+    return need_reset_pose
+
 
 print "AAA"
 app.run(port=7000)

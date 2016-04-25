@@ -1,0 +1,7 @@
+{
+  "test_HttpServer.py::TestHttpServer::()::test_add_virtual_object_ok_and_duplicate": true, 
+  "test_HttpServer.py::TestHttpServer::()::test_delete_virtual_object": true, 
+  "test_HttpServer.py::TestHttpServer::()::test_delete_virtual_object_from_client_bad": true, 
+  "test_HttpServer.py::TestHttpServer::()::test_get_virtual_environment_with_objects": true, 
+  "test_HttpServer.py::TestHttpServer::()::test_reset_pose": true
+}
