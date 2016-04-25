@@ -4,8 +4,8 @@ from abc import ABCMeta
 import requests
 from PyQt4.QtCore import QObject
 from PyQt4.QtCore import pyqtWrapperType
-from VirtualEnvViewer.Helper import MapParams, Resolution, MapWidth, Cell
-from VirtualEnvViewer.VirtualObject import VirtualObject
+from Helper import MapParams, Resolution, MapWidth, Cell
+from VirtualObject import VirtualObject
 
 
 class FinalMeta(ABCMeta, pyqtWrapperType):
@@ -42,9 +42,8 @@ class VirtualEnvironmentService(QObject):
             temp = set()
             for cell in i['cells']:
                 temp.add(Cell(int(cell[0]), int(cell[1]), int(cell[2])))
-            virtual_objects.append(VirtualObject(cells=frozenset(temp)))
+            virtual_objects.append(VirtualObject(cells=frozenset(temp), name=i["name"]))
 
-        print virtual_objects
         return (map_params, set(virtual_objects))
 
     def send_update_command(self, to_be_added_objects, to_be_removed_objects):
@@ -66,8 +65,9 @@ class VirtualEnvironmentService(QObject):
         # data = {"cells": list(virtual_object.get_cells())}
         data = dict()
         data["cells"] = list(virtual_object.get_cells())
+        data["name"] = virtual_object.get_name()
         print json.dumps(data)
-        bla = json.dumps(data)
+        # bla = json.dumps(data)
 
         r = requests.post(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
 
@@ -78,6 +78,7 @@ class VirtualEnvironmentService(QObject):
 
         data = dict()
         data["cells"] = list(virtual_object.get_cells())
+        data["name"] = virtual_object.get_name()
         print json.dumps(data)
         bla = json.dumps(data)
 

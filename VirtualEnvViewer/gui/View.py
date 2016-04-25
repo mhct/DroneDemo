@@ -1,10 +1,10 @@
 from PyQt4 import QtGui
 
 import pyqtgraph.opengl as gl
-from VirtualEnvViewer.gui import Controller
+from gui import Controller
 from DrawingHelper import DrawingHelper
 from Popup import Popup
-from VirtualEnvViewer.gui.CustomizedGLGridItem import CustomizedGLGridItem
+from gui.CustomizedGLGridItem import CustomizedGLGridItem
 
 
 class View(QtGui.QWidget):

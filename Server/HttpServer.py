@@ -35,8 +35,9 @@ def add_object():
     if data:
         processed_data = json.loads(data)
         virtual_object_data = processed_data["cells"]
+        virtual_object_name = processed_data["name"]
         if virtual_object_data:
-            vo = VirtualObject(virtual_object_data)
+            vo = VirtualObject(virtual_object_data, virtual_object_name)
             try:
                 _virtual_environment.add_virtual_object(vo)
             except ValueError as e:
@@ -53,8 +54,9 @@ def delete_object():
     if data:
         processed_data = json.loads(data)
         virtual_object_data = processed_data["cells"]
+        virtual_object_name = processed_data["name"]
         if virtual_object_data:
-            vo = VirtualObject(virtual_object_data)
+            vo = VirtualObject(virtual_object_data, virtual_object_name)
             if _virtual_environment.remove_virtual_object(vo):
                 return Response(status=200)
             else:

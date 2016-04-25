@@ -1,6 +1,6 @@
 import unittest
 
-from VirtualEnvViewer.MD5Generator import md5
+from MD5Generator import md5
 from VirtualObject import VirtualObject
 
 

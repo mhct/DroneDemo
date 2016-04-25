@@ -5,8 +5,8 @@ class VirtualObject:
     Immutable class to store virtual object information
     """
 
-    def __init__(self, cells):
-        self._name = ""
+    def __init__(self, cells, name):
+        self._name = name
         if not len(cells) > 0:
             raise ValueError("There should be a list of Cells (x,y,z)")
 
@@ -24,6 +24,9 @@ class VirtualObject:
         :rtype: list
         """
         return list(self._cells)
+
+    def get_name(self):
+        return self._name
 
     def __eq__(self, other):
         if not isinstance(other, self.__class__):

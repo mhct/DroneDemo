@@ -100,6 +100,9 @@ class VirtualEnvironment:
         ret = []
 
         for vo in self._virtual_object_set:
-            ret.append({'cells': vo.get_cells()})
+            data = dict()
+            data["cells"] = vo.get_cells()
+            data["name"] = vo.get_name()
+            ret.append(data)
 
         return ret

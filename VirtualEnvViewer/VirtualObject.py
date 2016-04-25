@@ -1,6 +1,6 @@
 import random
 
-from VirtualEnvViewer.Helper import Cell
+from Helper import Cell
 
 
 class VirtualObject:
@@ -8,15 +8,19 @@ class VirtualObject:
     Immutable class to store virtual object information
     """
 
-    def __init__(self, file_path=None, cells=None):
+    def __init__(self, file_path=None, cells=None, name=None):
+        if cells is not None and name is None:
+            raise ValueError()
+
         self._name = ""
 
         if cells is None:
             self._read_file(file_path)
         else:
             self._cells = cells
-            self._name = "a"
+            self._name = name
 
+        random.seed(self.__hash__())
         self._color = (random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1))
 
     def get_cells(self):
@@ -37,7 +41,7 @@ class VirtualObject:
 
         # the first line of the input file defines the name of the object
         first_line = f.readline()
-        self._name = first_line.strip("\n")
+        self._name = unicode(first_line.strip("\n"))
 
         cells = []
         line = f.readline()

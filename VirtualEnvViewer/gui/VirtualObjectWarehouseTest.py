@@ -1,7 +1,7 @@
 import unittest
 
 from VirtualObject import VirtualObject
-from VirtualEnvViewer.gui import VirtualObjectWarehouse
+from gui import VirtualObjectWarehouse
 
 
 class MyTestCase(unittest.TestCase):
