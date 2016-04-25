@@ -29,6 +29,8 @@ class View(QtGui.QWidget):
         self._drone_mesh = None
         self._elevation_map_meshes = None
 
+        self._current_drone_pose = None
+
     def _init_components(self):
         """
         Initialize the gui components
@@ -147,8 +149,19 @@ class View(QtGui.QWidget):
         if drone_pose is None:
             return
 
-        drone_mesh = DrawingHelper.create_drone_mesh(drone_pose, self._map_params.resolution)
-        self._draw_new_drone_pose(drone_mesh)
+        if self._current_drone_pose is None:
+            drone_mesh = DrawingHelper.create_drone_mesh(drone_pose, self._map_params.resolution)
+            self._draw_new_drone_pose(drone_mesh)
+        else:
+            self._translate_current_drone_pose(drone_pose)
+
+    def _translate_current_drone_pose(self, new_drone_pose):
+        x_trans = new_drone_pose[0] - self._current_drone_pose[0]
+        y_trans = new_drone_pose[1] - self._current_drone_pose[1]
+        z_trans = new_drone_pose[2] - self._current_drone_pose[2]
+
+        for item in self._drone_mesh:
+            item.translate(x_trans, y_trans, z_trans)
 
     def _update_virtual_environment(self):
         virtual_enviroment_objects = self._controller.get_added_objects()
