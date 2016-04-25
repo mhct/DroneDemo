@@ -58,7 +58,7 @@ class Popup(QtGui.QWidget):
         self._check_boxes = {}
         for virtual_object in objects_in_warehouse:
             self._create_checkbox(layout, virtual_object)
-        
+
         added_objects = self._controller.get_added_objects()
         for virtual_object in added_objects:
             self._check_boxes[virtual_object].toggle()
@@ -79,12 +79,12 @@ class Popup(QtGui.QWidget):
 
     def _get_selected_objects(self):
         selected_objects = []
-        
+
         for virtual_object in self._check_boxes.keys():
             checkbox = self._check_boxes[virtual_object]
             if checkbox.isChecked():
                 selected_objects.append(virtual_object)
-        
+
         return selected_objects
 
     def _checkbox_changed(self, checkbox, virtual_object):
@@ -123,9 +123,9 @@ class Popup(QtGui.QWidget):
         width = self._map_params.map_width
 
         drone_mesh = DrawingHelper.create_drone_mesh(drone_state, res)
-        drone_mesh.translate(-width.x * res.x / 2, -width.y * res.y / 2,
-                             0, True)
-        self._map_3d.addItem(drone_mesh)
+        for item in drone_mesh:
+            item.translate(-width.x * res.x / 2, -width.y * res.y / 2, 0, True)
+            self._map_3d.addItem(item)
 
     def _create_mesh(self, virtual_object):
         res = self._map_params.resolution
@@ -134,13 +134,11 @@ class Popup(QtGui.QWidget):
 
         surfaces = []
         for cell in virtual_object.get_cells():
-            surfaces += DrawingHelper.construct_cube(cell.x * res.x, cell.y * res.y,
-                                                     res, cell.height)
+            surfaces += DrawingHelper.construct_cube(cell.x * res.x, cell.y * res.y, res, cell.height)
 
         object_mesh = gl.GLMeshItem(vertexes=np.array(surfaces), color=color, smooth=False, shader='shaded',
                                     glOptions='opaque')
-        object_mesh.translate(-width.x * res.x / 2, -width.y * res.y / 2,
-                              0, True)
+        object_mesh.translate(-width.x * res.x / 2, -width.y * res.y / 2, 0, True)
 
         self._mesh[virtual_object] = object_mesh
 
