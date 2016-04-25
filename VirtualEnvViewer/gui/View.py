@@ -152,6 +152,7 @@ class View(QtGui.QWidget):
         if self._current_drone_pose is None:
             drone_mesh = DrawingHelper.create_drone_mesh(drone_pose, self._map_params.resolution)
             self._draw_new_drone_pose(drone_mesh)
+            self._current_drone_pose = drone_pose
         else:
             self._translate_current_drone_pose(drone_pose)
 
@@ -162,6 +163,8 @@ class View(QtGui.QWidget):
 
         for item in self._drone_mesh:
             item.translate(x_trans, y_trans, z_trans)
+
+        self._current_drone_pose = new_drone_pose
 
     def _update_virtual_environment(self):
         virtual_enviroment_objects = self._controller.get_added_objects()
