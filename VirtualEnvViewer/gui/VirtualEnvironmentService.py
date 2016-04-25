@@ -33,7 +33,8 @@ class VirtualEnvironmentService(QObject):
         resolution_data = env_configuration_raw[0]
         width_data = env_configuration_raw[1]
 
-        map_params = MapParams(Resolution(resolution_data[0], resolution_data[1]), MapWidth(width_data[0], width_data[1]))
+        map_params = MapParams(Resolution(resolution_data[0], resolution_data[1]),
+                               MapWidth(width_data[0], width_data[1]))
 
         virtual_objects_data = data['virtual_objects']
         virtual_objects = []
@@ -53,6 +54,13 @@ class VirtualEnvironmentService(QObject):
         for obj in to_be_removed_objects:
             self._delete_virtual_object(obj)
 
+    def reset_pose(self):
+        r = requests.post(self.virtual_env_url + "/virtualEnvironment/reset")
+
+        if r.status_code == 200:
+            return True
+        else:
+            return False
 
     def _add_virtual_object(self, virtual_object):
         # data = {"cells": list(virtual_object.get_cells())}
@@ -63,7 +71,7 @@ class VirtualEnvironmentService(QObject):
 
         r = requests.post(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
 
-        return True #FIXME
+        return True  # FIXME
 
     def _delete_virtual_object(self, virtual_object):
         # data = {"cells": list(virtual_object.get_cells())}
@@ -74,5 +82,4 @@ class VirtualEnvironmentService(QObject):
         bla = json.dumps(data)
 
         r = requests.delete(self.virtual_env_url + "/virtualEnvironment", json=json.dumps(data))
-        return True #FIXME
-
+        return True  # FIXME

@@ -64,6 +64,16 @@ class View(QtGui.QWidget):
         update_map_button.clicked.connect(self._open_popup)
         grid.addWidget(update_map_button, 0, 0, 1, 3)
 
+        reset_button = QtGui.QPushButton("Reset")
+        reset_button.clicked.connect(self._open_reset_popup)
+        grid.addWidget(reset_button, 15, 0, 1, 3)
+
+    def _open_reset_popup(self):
+        reply = QtGui.QMessageBox.question(self, 'Message', "Are you sure to reset?",
+                                           QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        if reply == QtGui.QMessageBox.Yes:
+            self._controller.send_reset_command()
+
     def _init_3d_map(self, grid):
         res = self._map_params.resolution
         width = self._map_params.map_width
@@ -141,6 +151,6 @@ class View(QtGui.QWidget):
     def _update_virtual_environment(self):
         virtual_enviroment_objects = self._controller.get_added_objects()
         elevation_map_meshes = DrawingHelper.create_elevation_map_mesh(virtual_enviroment_objects,
-                                                                     self._map_params.resolution)
+                                                                       self._map_params.resolution)
         self._draw_new_elevation_map(elevation_map_meshes)
         self._update_added_object_list(virtual_enviroment_objects)

@@ -64,3 +64,6 @@ class Controller(QObject):
 
     def get_all_objects_in_warehouse(self):
         return self._warehouse.get_all_objects()
+
+    def send_reset_command(self):
+        self._virtual_environment_service.reset_pose()

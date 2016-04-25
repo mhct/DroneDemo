@@ -1,0 +1,8 @@
+{
+  "Server/test_HttpServer.py::TestHttpServer::()::test_add_virtual_object_ok_and_duplicate": true, 
+  "Server/test_HttpServer.py::TestHttpServer::()::test_delete_virtual_object": true, 
+  "Server/test_HttpServer.py::TestHttpServer::()::test_delete_virtual_object_from_client_bad": true, 
+  "Server/test_HttpServer.py::TestHttpServer::()::test_get_virtual_environment_with_objects": true, 
+  "Server/test_HttpServer.py::TestHttpServer::()::test_reset_pose": true, 
+  "VirtualEnvViewer/gui/test_VirtualObjectWarehouse.py": true
+}
