@@ -17,7 +17,7 @@ class VirtualObject:
         if cells is None:
             self._read_file(file_path)
         else:
-            self._cells = cells
+            self._set_cells(cells)
             self._name = name
 
         random.seed(self.__hash__())
@@ -53,7 +53,7 @@ class VirtualObject:
 
         f.close()
 
-        self._cells = frozenset(cells)
+        self._set_cells(cells)
 
     def get_name(self):
         """
@@ -61,6 +61,9 @@ class VirtualObject:
         :rtype: str
         """
         return self._name
+
+    def _set_cells(self, cells):
+        self._cells = frozenset(cells)
 
     def get_color(self):
         return self._color

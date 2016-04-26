@@ -2,8 +2,8 @@ import flask
 from flask import jsonify, request, Response
 from jsonpickle import json
 
+from Configuration import Configuration
 from VirtualEnvironment import VirtualEnvironment
-from Helper import MapWidth, CellSize, MapParams
 from VirtualObject import VirtualObject
 
 
@@ -13,7 +13,8 @@ __author__ = 'mario'
 
 
 app = flask.Flask(__name__)
-_virtual_environment = VirtualEnvironment(MapParams(MapWidth(50,50), CellSize(100,100)))
+configuration = Configuration()
+_virtual_environment = VirtualEnvironment(configuration.get_map_params())
 need_reset_pose = False
 
 
