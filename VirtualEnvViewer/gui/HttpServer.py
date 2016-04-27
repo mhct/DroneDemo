@@ -3,7 +3,7 @@ from PyQt4.QtCore import QThread, QObject
 import flask
 from flask import jsonify, request, Response
 
-from Server.Helper import Point
+from Helper import Point
 
 _app = flask.Flask(__name__)
 
@@ -48,7 +48,9 @@ class MyApp(QThread):
         self.app = myApp
 
     def run(self):
-        self.app.run()
+        self.app.config['HOST'] = 'localhost'
+        self.app.config['PORT'] = 5000
+        self.app.run(host='0.0.0.0')
 
 
 webapp = MyApp(_app)
