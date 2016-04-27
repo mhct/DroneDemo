@@ -1,0 +1,4 @@
+MapWidthX 40
+MapWidthY 60
+ResolutionX 100
+ResolutionY 100

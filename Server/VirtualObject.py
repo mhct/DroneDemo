@@ -16,7 +16,7 @@ class VirtualObject:
         for cell in cells:
             cellList.append(Cell(cell[0], cell[1], cell[2]))
 
-        self._cells = cellList
+        self._set_cells(cellList)
 
     def get_cells(self):
         """
@@ -24,6 +24,9 @@ class VirtualObject:
         :rtype: list
         """
         return list(self._cells)
+
+    def _set_cells(self, cells):
+        self._cells = frozenset(cells)
 
     def get_name(self):
         return self._name
